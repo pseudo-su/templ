@@ -1,0 +1,31 @@
+test_self:
+  # Values
+  literal_1: ONE
+  literal_2: TWO
+  use_section: "1"
+  literal_section_1:
+    val_1: SEC1_ONE
+    val_2: SEC1_TWO
+  literal_section_2:
+    val_1: SEC2_ONE
+    val_2: SEC2_TWO
+  # TEST CASES
+  # reference simple values
+  ref: ${ self `test_self.literal_1` }
+  ref_composite: ${ self `test_self.literal_2` }-${`Hello World`}
+  # reference complex values
+  ref_section1: ${ self `test_self.literal_section_1` }
+  ref_section2: ${ self `test_self.literal_section_2` }
+  # Pass multiple strings to `self` and let it join them to determine self reference str
+  ref_section_indirect: ${ self `test_self.literal_section_` (self `test_self.use_sections`) }
+test_env:
+  ref_env: ${ env `ENV` }
+  ref_env_composite: ${ env `ENV` }-${ env `STAGE` }
+  ref_env_indirect: ${ env `E` `N` `V` }-${ env `S` `T` `A` `G` `E` }
+test_load:
+  load_json: ${ (load `./simple.part.json:section`) }
+  load_yaml: ${ (load `./simple.part.json::section`) }
+  load_toml: ${ (load `./simple.part.json:::section.literal_2`) }
+  load_indirect: ${ (load `./simple.` (env `ENV`) `.yaml` `:section.literal_2`) }
+test_param:
+  ref_param: ${ param `some_param` }
