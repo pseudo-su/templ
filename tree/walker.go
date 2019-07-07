@@ -1,74 +1,73 @@
 package tree
 
 import (
+	"errors"
 	"fmt"
 )
 
+// import "errors"
+
 type WalkingContext struct {
 	path   []string
-	curr   Node
-	root   Node
-	parent Node
+	curr   *Node
+	root   *Node
+	parent *Node
 }
 
 type NodeWalkFn func(WalkingContext) error
 
-func WalkTree(node Node, actionFn NodeWalkFn, ctx *WalkingContext) error {
-	if ctx == nil {
-		ctx = &WalkingContext{
-			curr:   node,
-			root:   node,
-			parent: nil,
-		}
+func WalkTree(node Node, actionFn NodeWalkFn) error {
+	ctx := WalkingContext{
+		curr:   &node,
+		root:   &node,
+		parent: nil,
 	}
-	// TODO: do something with return value?
-	err := actionFn(*ctx)
+	return WalkTreeCtx(ctx, actionFn)
+}
+
+func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
+	fmt.Println("walk tree")
+	// Invoke action on current node
+	err := actionFn(ctx)
 	if err != nil {
 		return err
 	}
+	// Continue walking if applicable
+	node := *ctx.curr
 
-	switch node.(type) {
+	switch node := node.(type) {
 	case ObjectNode:
-		node := node.(ObjectNode)
-
-		for _, key := range node.sortedKeys {
-			childNode := node.raw[key]
-			// TODO: childContext
+		fmt.Println("walk object node")
+		return node.forEach(func(childNode *Node, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)
-			childPath = append(childPath, key)
-			childContext := &WalkingContext{
+			childPath = append(childPath, desc)
+			childContext := WalkingContext{
 				path:   childPath,
 				root:   ctx.root,
 				curr:   childNode,
 				parent: ctx.curr,
 			}
-			err := WalkTree(childNode, actionFn, childContext)
-			if err != nil {
-				return err
-			}
-		}
+			return WalkTreeCtx(childContext, actionFn)
+		})
 	case ArrayNode:
-		node := node.(ArrayNode)
-		for i, childNode := range node.raw {
-			// TODO: childContext
+		fmt.Println("walk array node")
+		return node.forEach(func(childNode *Node, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)
-			childPath = append(childPath, fmt.Sprintf("[%v]", i))
+			childPath = append(childPath, desc)
 
-			childContext := &WalkingContext{
+			childContext := WalkingContext{
 				path:   childPath,
 				root:   ctx.root,
 				curr:   childNode,
 				parent: ctx.curr,
 			}
-			err := WalkTree(childNode, actionFn, childContext)
-			if err != nil {
-				return err
-			}
-		}
-	default:
+			return WalkTreeCtx(childContext, actionFn)
+		})
+	case StringNode, NumberNode, BoolNode, NullNode:
 		return nil
+	default:
+		return errors.New("unknown node type found while walking")
 	}
-	return nil
 }

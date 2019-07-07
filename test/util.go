@@ -3,16 +3,19 @@ package test
 import (
 	"fmt"
 	"regexp"
+	"runtime/debug"
 	"testing"
 
 	"github.com/pseudo-su/templ"
 	"github.com/pseudo-su/templ/tree"
+	templTree "github.com/pseudo-su/templ/tree"
 	"gotest.tools/assert"
 )
 
-func failOnError(t *testing.T, err error) {
+func failOnError(t *testing.T, err error, msg string) {
 	if err != nil {
-		t.Fatal(err)
+		t.Log(string(debug.Stack()))
+		t.Fatal(msg, err)
 	}
 }
 
@@ -47,11 +50,11 @@ func evalAnd(t *testing.T, templateStr string, paramsArg *map[string]string, for
 	}
 
 	inputTree, err := tree.ReadIntoTree([]byte(templateStr), format)
-	failOnError(t, err)
+	failOnError(t, err, "")
 	outputTree, err := templ.New().Params(params).Tree("test", inputTree).Execute()
-	failOnError(t, err)
-	treeString, err := templ.DescribeTree(outputTree, nil)
-	failOnError(t, err)
+	failOnError(t, err, "")
+	treeString, err := templTree.DescribeTree(outputTree)
+	failOnError(t, err, "")
 
 	t.Log("TREE:")
 	t.Log(outputTree)

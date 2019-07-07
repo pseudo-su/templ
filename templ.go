@@ -77,7 +77,7 @@ func (templ Templ) Execute() (tree.Node, error) {
 	}).Delims(templ.startDelim, templ.endDelim)
 
 	// Walk tree and execute templating logic for any string fields
-	return tree.ExecuteTreeTemplate(*templ.tree, *rootTemplate)
+	return tree.ExecuteTreeTemplate(templ.tree, *rootTemplate)
 }
 
 func ReadFileIntoTree(filename string) (tree.Node, error) {
@@ -104,8 +104,4 @@ func ReadFileIntoTree(filename string) (tree.Node, error) {
 	}
 
 	return t, nil
-}
-
-func DescribeTree(rootNode tree.Node, ctx *tree.WalkingContext) (string, error) {
-	return tree.DescribeTree(rootNode, ctx)
 }

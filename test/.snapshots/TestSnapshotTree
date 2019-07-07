@@ -15,10 +15,7 @@
           templateResolved: (bool) false
         }
       },
-      sortedKeys: ([]string) (len=6) {
-        (string) "",
-        (string) "",
-        (string) "",
+      sortedKeys: ([]string) (len=3) {
         (string) (len=7) "ref_env",
         (string) (len=17) "ref_env_composite",
         (string) (len=16) "ref_env_indirect"
@@ -43,11 +40,7 @@
           templateResolved: (bool) false
         }
       },
-      sortedKeys: ([]string) (len=8) {
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
+      sortedKeys: ([]string) (len=4) {
         (string) (len=13) "load_indirect",
         (string) (len=9) "load_json",
         (string) (len=9) "load_toml",
@@ -61,8 +54,7 @@
           templateResolved: (bool) false
         }
       },
-      sortedKeys: ([]string) (len=2) {
-        (string) "",
+      sortedKeys: ([]string) (len=1) {
         (string) (len=9) "ref_param"
       }
     },
@@ -87,9 +79,7 @@
               templateResolved: (bool) false
             }
           },
-          sortedKeys: ([]string) (len=4) {
-            (string) "",
-            (string) "",
+          sortedKeys: ([]string) (len=2) {
             (string) (len=5) "val_1",
             (string) (len=5) "val_2"
           }
@@ -105,9 +95,7 @@
               templateResolved: (bool) false
             }
           },
-          sortedKeys: ([]string) (len=4) {
-            (string) "",
-            (string) "",
+          sortedKeys: ([]string) (len=2) {
             (string) (len=5) "val_1",
             (string) (len=5) "val_2"
           }
@@ -137,17 +125,7 @@
           templateResolved: (bool) false
         }
       },
-      sortedKeys: ([]string) (len=20) {
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
-        (string) "",
+      sortedKeys: ([]string) (len=10) {
         (string) (len=9) "literal_1",
         (string) (len=9) "literal_2",
         (string) (len=17) "literal_section_1",
@@ -161,11 +139,7 @@
       }
     }
   },
-  sortedKeys: ([]string) (len=8) {
-    (string) "",
-    (string) "",
-    (string) "",
-    (string) "",
+  sortedKeys: ([]string) (len=4) {
     (string) (len=8) "test_env",
     (string) (len=9) "test_load",
     (string) (len=10) "test_param",

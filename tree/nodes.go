@@ -2,6 +2,7 @@ package tree
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"sort"
 )
@@ -63,8 +64,9 @@ func NewObjectNode(v reflect.Value) (ObjectNode, error) {
 		return entries[i].k < entries[j].k
 	})
 	var raw = make(map[string]Node)
-	var sortedKeys = make([]string, len(entries))
-	for _, e := range entries {
+	sortedKeys := []string{}
+	for i := 0; i < len(entries); i++ {
+		e := entries[i]
 		val, err := NewNode(e.v.Elem())
 		if err != nil {
 			return ObjectNode{raw: raw, sortedKeys: sortedKeys}, err
@@ -76,26 +78,17 @@ func NewObjectNode(v reflect.Value) (ObjectNode, error) {
 	return node, nil
 }
 
-// func (n *ObjectNode) MarshalJSON() ([]byte, error) {
-// 	spew.Dump("MarshalJSON")
-// 	buffer := bytes.NewBufferString("{")
-// 	length := len(n.raw)
-// 	count := 0
-// 	for key, value := range n.raw {
-// 		jsonValue, err := json.Marshal(value)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		buffer.WriteString(fmt.Sprintf("\"%s\":%s", key, string(jsonValue)))
-// 		count++
-// 		if count < length {
-// 			buffer.WriteString(",")
-// 		}
-// 	}
-// 	buffer.WriteString("}")
-// 	spew.Dump(buffer)
-// 	return buffer.Bytes(), nil
-// }
+func (n *ObjectNode) forEach(fn func(node *Node, idx int, desc string) error) error {
+	for idx, key := range n.sortedKeys {
+		childNode := n.raw[key]
+		desc := key
+		err := fn(&childNode, idx, desc)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 type StringNode struct {
 	raw              string
@@ -124,6 +117,18 @@ func NewArrayNode(v reflect.Value) (ArrayNode, error) {
 	node := ArrayNode{raw: raw}
 	// spew.Dump(node)
 	return node, nil
+}
+
+func (n *ArrayNode) forEach(fn func(node *Node, idx int, desc string) error) error {
+	for idx, _ := range n.raw {
+		childNode := n.raw[idx]
+		desc := fmt.Sprintf("[%v]", idx)
+		err := fn(&childNode, idx, desc)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type BoolNode struct {

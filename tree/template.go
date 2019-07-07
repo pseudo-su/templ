@@ -44,7 +44,7 @@ func CreateSelfFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (s
 func CreateFileLoadFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (string, error) {
 	return func(args ...string) (string, error) {
 		// when resolving an object replace
-		return "<load>", nil
+		return "<TODO: load>", nil
 	}
 }
 
@@ -96,24 +96,24 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 }
 
 func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, error) {
+	fmt.Println("walk and execute")
 	err := WalkTree(rootNode, func(ctx WalkingContext) error {
-		switch ctx.curr.(type) {
+		fmt.Println("execute")
+		node := *ctx.curr
+		switch node.(type) {
 		case StringNode:
+			fmt.Println("exectue string template")
 			rctx := ResolveContext{
 				prevPaths: [][]string{},
 				path:      ctx.path,
-				curr:      &ctx.curr,
-				root:      &ctx.root,
-				parent:    &ctx.parent,
+				curr:      ctx.curr,
+				root:      ctx.root,
+				parent:    ctx.parent,
 			}
-			err := ResolveStringNode(rootTemplate, rctx)
-			if err != nil {
-				return err
-			}
-		default:
+			return ResolveStringNode(rootTemplate, rctx)
 		}
 		return nil
-	}, nil)
+	})
 
 	return rootNode, err
 }

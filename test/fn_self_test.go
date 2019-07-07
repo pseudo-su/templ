@@ -64,7 +64,7 @@ func TestSelfComposite(t *testing.T) {
 stage: prod
 values:
   section_prod:
-	  url: prod.url.com
+    url: prod.url.com
   section_dev:
     url: dev.url.com
 test_case: ${ self "values.section_" (self "stage") }

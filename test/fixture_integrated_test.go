@@ -6,6 +6,7 @@ import (
 
 	cupaloy "github.com/bradleyjkemp/cupaloy"
 	"github.com/pseudo-su/templ"
+	templTree "github.com/pseudo-su/templ/tree"
 	"gotest.tools/assert"
 )
 
@@ -13,18 +14,18 @@ func TestDifferentFiletypeLoad(t *testing.T) {
 	os.Setenv("ENV", "envname")
 	os.Setenv("STAGE", "stagename")
 	jsonTree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.json").Execute()
-	failOnError(t, err)
+	failOnError(t, err, "")
 	yamlTree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.yaml").Execute()
-	failOnError(t, err)
+	failOnError(t, err, "")
 	tomlTree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.toml").Execute()
-	failOnError(t, err)
+	failOnError(t, err, "")
 
-	one, err := templ.DescribeTree(jsonTree, nil)
-	failOnError(t, err)
-	two, err := templ.DescribeTree(yamlTree, nil)
-	failOnError(t, err)
-	three, err := templ.DescribeTree(tomlTree, nil)
-	failOnError(t, err)
+	one, err := templTree.DescribeTree(jsonTree)
+	failOnError(t, err, "")
+	two, err := templTree.DescribeTree(yamlTree)
+	failOnError(t, err, "")
+	three, err := templTree.DescribeTree(tomlTree)
+	failOnError(t, err, "")
 
 	t.Log("JSON")
 	t.Log(one)
@@ -43,7 +44,7 @@ func TestSnapshotTree(t *testing.T) {
 	os.Setenv("STAGE", "stagename")
 
 	tree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.yaml").Execute()
-	failOnError(t, err)
+	failOnError(t, err, "")
 
 	cupaloy.SnapshotT(t, tree)
 }
@@ -53,10 +54,10 @@ func TestSnapshotDescription(t *testing.T) {
 	os.Setenv("STAGE", "stagename")
 
 	tree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.yaml").Execute()
-	failOnError(t, err)
+	failOnError(t, err, "")
 
-	treeDescription, err := templ.DescribeTree(tree, nil)
-	failOnError(t, err)
+	treeDescription, err := templTree.DescribeTree(tree)
+	failOnError(t, err, "")
 
 	cupaloy.SnapshotT(t, treeDescription)
 }
