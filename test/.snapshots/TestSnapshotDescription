@@ -1,0 +1,27 @@
+root(object):
+  test_env(object):
+    ref_env(str): ${ env `ENV` }
+    ref_env_composite(str): ${ env `ENV` }-${ env `STAGE` }
+    ref_env_indirect(str): ${ env `E` `N` `V` }-${ env `S` `T` `A` `G` `E` }
+  test_load(object):
+    load_indirect(str): ${ (load `./partial.` `yaml` `:section.literal_2`) }
+    load_json(str): ${ (load `./partial.json:section`) }
+    load_toml(str): ${ (load `./partial.toml:::section.literal_2`) }
+    load_yaml(str): ${ (load `./partial.yaml::section`) }
+  test_param(object):
+    ref_param(str): ${ param `some_param` }
+  test_self(object):
+    literal_1(str): ONE
+    literal_2(str): TWO
+    literal_section_1(object):
+      val_1(str): SEC1_ONE
+      val_2(str): SEC1_TWO
+    literal_section_2(object):
+      val_1(str): SEC2_ONE
+      val_2(str): SEC2_TWO
+    ref(str): ${ self `test_self.literal_1` }
+    ref_composite(str): ${ self `test_self.literal_2` }-${`Hello World`}
+    ref_section1(str): ${ self `test_self.literal_section_1` }
+    ref_section2(str): ${ self `test_self.literal_section_2` }
+    ref_section_indirect(str): ${ self `test_self.literal_section_` (self `test_self.use_sections`) }
+    use_section(str): 1

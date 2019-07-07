@@ -1,8 +1,10 @@
 #!/bin/bash
 set -Eeuo pipefail
 
-# Templating
-yaml2json test/fixtures/simple.yaml test/fixtures/simple.json
-yaml2toml test/fixtures/simple.yaml test/fixtures/simple.toml
-yaml2json test/fixtures/simple.part.yaml test/fixtures/simple.part.json
-yaml2toml test/fixtures/simple.part.yaml test/fixtures/simple.part.toml
+## Templating
+# Index
+yaml2json test/fixtures/integrated/index.yaml test/fixtures/integrated/index.json
+yaml2toml test/fixtures/integrated/index.yaml test/fixtures/integrated/index.toml
+# Partials
+yaml2json test/fixtures/integrated/partial.yaml test/fixtures/integrated/partial.json
+yaml2toml test/fixtures/integrated/partial.yaml test/fixtures/integrated/partial.toml

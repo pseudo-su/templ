@@ -11,18 +11,35 @@ import (
 )
 
 type Templ struct {
-	name     *string
-	params   *map[string]string
-	tree     *tree.Node
-	filepath *string
+	name       *string
+	params     *map[string]string
+	tree       *tree.Node
+	filepath   *string
+	startDelim string
+	endDelim   string
 }
 
 func New() Templ {
-	return Templ{}
+	return Templ{
+		startDelim: "${",
+		endDelim:   "}",
+	}
 }
 
 func (templ Templ) Params(params map[string]string) Templ {
 	templ.params = &params
+	return templ
+}
+
+func (templ Templ) Delims(start, end string) Templ {
+	templ.startDelim = start
+	templ.endDelim = end
+	return templ
+}
+
+func (templ Templ) Tree(name string, tree tree.Node) Templ {
+	templ.name = &name
+	templ.tree = &tree
 	return templ
 }
 
@@ -46,24 +63,18 @@ func (templ Templ) Execute() (tree.Node, error) {
 	// Setup default values for the templating
 	rootTemplate := template.New(*templ.name).Funcs(template.FuncMap{
 		"env": func(args ...string) (string, error) {
-			input := ""
-			for _, arg := range args {
-				input += arg
-			}
-			envVal := os.Getenv(input)
+			arg := tree.JoinStr(args)
+			envVal := os.Getenv(arg)
 			if envVal == "" {
-				return envVal, errors.New("Environment variable " + input + "required")
+				return envVal, errors.New("Environment variable " + arg + "required")
 			}
 			return envVal, nil
 		},
 		"param": func(args ...string) string {
-			input := ""
-			for _, arg := range args {
-				input += arg
-			}
-			return params[input]
+			arg := tree.JoinStr(args)
+			return params[arg]
 		},
-	}).Delims("${", "}")
+	}).Delims(templ.startDelim, templ.endDelim)
 
 	// Walk tree and execute templating logic for any string fields
 	return tree.ExecuteTreeTemplate(*templ.tree, *rootTemplate)
@@ -93,4 +104,8 @@ func ReadFileIntoTree(filename string) (tree.Node, error) {
 	}
 
 	return t, nil
+}
+
+func DescribeTree(rootNode tree.Node, ctx *tree.WalkingContext) (string, error) {
+	return tree.DescribeTree(rootNode, ctx)
 }

@@ -23,9 +23,9 @@ test_env:
   ref_env_composite: ${ env `ENV` }-${ env `STAGE` }
   ref_env_indirect: ${ env `E` `N` `V` }-${ env `S` `T` `A` `G` `E` }
 test_load:
-  load_json: ${ (load `./simple.part.json:section`) }
-  load_yaml: ${ (load `./simple.part.json::section`) }
-  load_toml: ${ (load `./simple.part.json:::section.literal_2`) }
-  load_indirect: ${ (load `./simple.` (env `ENV`) `.yaml` `:section.literal_2`) }
+  load_json: ${ (load `./partial.json:section`) }
+  load_yaml: ${ (load `./partial.yaml::section`) }
+  load_toml: ${ (load `./partial.toml:::section.literal_2`) }
+  load_indirect: ${ (load `./partial.` `yaml` `:section.literal_2`) }
 test_param:
   ref_param: ${ param `some_param` }

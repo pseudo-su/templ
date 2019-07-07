@@ -2,51 +2,71 @@ package tree
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"strings"
 	"text/template"
 )
 
 type ResolveContext struct {
 	prevPaths [][]string
 	path      []string
-	curr      Node
-	root      Node
-	parent    Node
+	curr      *Node
+	root      *Node
+	parent    *Node
 }
 
 // func ResolveInTemplate
 
-func CreateSelfFn(rctx ResolveContext) func(...string) string {
-	// rctx := ResolveContext{
-	// 	contexts: []WalkingContext{ctx},
-	// }
-	return func(args ...string) string {
+func CreateSelfFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (string, error) {
+	return func(args ...string) (string, error) {
 		// when resolving an object replace
-		return "<self>"
+		node := *ResolvePath(JoinStr(args), rctx)
+		switch node := node.(type) {
+		case StringNode:
+			return node.raw, nil
+		case NumberNode:
+			return fmt.Sprintf("%v", node.raw), nil
+		case BoolNode:
+			return fmt.Sprintf("%v", node.raw), nil
+		case ObjectNode:
+			*resolvedNodes = append(*resolvedNodes, node)
+			return "", nil
+		case ArrayNode:
+			*resolvedNodes = append(*resolvedNodes, node)
+			return "", nil
+		default:
+			return "", errors.New("unhandled Node type")
+		}
 	}
 }
 
-func CreateFileLoadFn(rctx ResolveContext) func(...string) string {
-	return func(args ...string) string {
+func CreateFileLoadFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (string, error) {
+	return func(args ...string) (string, error) {
 		// when resolving an object replace
-		return "<load>"
+		return "<load>", nil
 	}
 }
 
-func ResolveFileLoad(filename string) {
-
+func ResolvePath(path string, rctx ResolveContext) *Node {
+	// TODO: resolve to the node at a given path
+	var node Node = StringNode{raw: "test", templateResolved: true}
+	return &node
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
-	// curr := rctx.curr.(StringNode)
-	val := rctx.curr.(StringNode).raw
+	curr := (*rctx.curr).(StringNode)
+	val := (*rctx.curr).(StringNode).raw
+	// resolvedNodes := map[string]interface{}{}
+	resolvedNodes := []Node{}
 	tmpl, err := rootTemplate.Funcs(template.FuncMap{
-		"self": CreateSelfFn(rctx),
-		"load": CreateFileLoadFn(rctx),
+		"self": CreateSelfFn(rctx, &resolvedNodes),
+		"load": CreateFileLoadFn(rctx, &resolvedNodes),
 	}).Parse(val)
 	if err != nil {
 		return err
 	}
+	// TODO pass params to template
 	data := struct {
 		stage string
 	}{
@@ -58,13 +78,20 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 	}
 
 	result := tpl.String()
-	fmt.Println(result)
-	if result == "<self>" {
-		// If this is true then
-	}
-	if result == "<load>" {
 
+	if len(resolvedNodes) > 1 {
+		return errors.New("a single field can not resolve to multiple complex values")
 	}
+
+	if len(resolvedNodes) == 1 && strings.TrimSpace(result) != "" {
+		return errors.New("unable to join strings with complex values")
+	}
+	if len(resolvedNodes) == 1 {
+		rctx.curr = &resolvedNodes[0]
+	} else {
+		curr.raw = result
+	}
+
 	return nil
 }
 
@@ -75,14 +102,15 @@ func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, e
 			rctx := ResolveContext{
 				prevPaths: [][]string{},
 				path:      ctx.path,
-				curr:      ctx.curr,
-				root:      ctx.root,
-				parent:    ctx.parent,
+				curr:      &ctx.curr,
+				root:      &ctx.root,
+				parent:    &ctx.parent,
 			}
 			err := ResolveStringNode(rootTemplate, rctx)
 			if err != nil {
 				return err
 			}
+		default:
 		}
 		return nil
 	}, nil)
