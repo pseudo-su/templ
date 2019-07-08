@@ -101,23 +101,23 @@
           }
         }),
         (string) (len=3) "ref": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: self>"),
+          raw: (*string)((len=35) "<TODO: self (test_self.literal_1) >"),
           templateResolved: (bool) false
         }),
         (string) (len=13) "ref_composite": (**tree.StringNode)({
-          raw: (*string)((len=24) "<TODO: self>-Hello World"),
+          raw: (*string)((len=47) "<TODO: self (test_self.literal_2) >-Hello World"),
           templateResolved: (bool) false
         }),
         (string) (len=12) "ref_section1": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: self>"),
+          raw: (*string)((len=43) "<TODO: self (test_self.literal_section_1) >"),
           templateResolved: (bool) false
         }),
         (string) (len=12) "ref_section2": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: self>"),
+          raw: (*string)((len=43) "<TODO: self (test_self.literal_section_2) >"),
           templateResolved: (bool) false
         }),
         (string) (len=20) "ref_section_indirect": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: self>"),
+          raw: (*string)((len=80) "<TODO: self (test_self.literal_section_<TODO: self (test_self.use_sections) >) >"),
           templateResolved: (bool) false
         }),
         (string) (len=11) "use_section": (**tree.StringNode)({

@@ -19,9 +19,9 @@ root(object):
     literal_section_2(object):
       val_1(str): SEC2_ONE
       val_2(str): SEC2_TWO
-    ref(str): <TODO: self>
-    ref_composite(str): <TODO: self>-Hello World
-    ref_section1(str): <TODO: self>
-    ref_section2(str): <TODO: self>
-    ref_section_indirect(str): <TODO: self>
+    ref(str): <TODO: self (test_self.literal_1) >
+    ref_composite(str): <TODO: self (test_self.literal_2) >-Hello World
+    ref_section1(str): <TODO: self (test_self.literal_section_1) >
+    ref_section2(str): <TODO: self (test_self.literal_section_2) >
+    ref_section_indirect(str): <TODO: self (test_self.literal_section_<TODO: self (test_self.use_sections) >) >
     use_section(str): 1

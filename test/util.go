@@ -50,17 +50,17 @@ func evalAnd(t *testing.T, templateStr string, paramsArg *map[string]string, for
 	}
 
 	inputTree, err := tree.ReadIntoTree([]byte(templateStr), format)
-	failOnError(t, err, "")
+	failOnError(t, err, "read into tree")
 	inputDesc, err := templTree.DescribeTree(inputTree)
-	failOnError(t, err, "")
+	failOnError(t, err, "describe tree")
 
 	t.Log("INPUT TREE:")
 	t.Log(inputDesc)
 
 	outputTree, err := templ.New().Params(params).Tree("test", inputTree).Execute()
-	failOnError(t, err, "")
+	failOnError(t, err, "execute templ")
 	outputDesc, err := templTree.DescribeTree(outputTree)
-	failOnError(t, err, "")
+	failOnError(t, err, "describe outputTree")
 
 	t.Log("TREE DESC:")
 	t.Log(outputDesc)

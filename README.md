@@ -57,4 +57,4 @@ env GO111MODULE=off go get -u github.com/myitcv/gobin
 
 * test: `go test ./...`
 * lint: `./bin/golangci-lint run ./...`
-* code gen: `go generate ./...` [link](https://github.com/go-swagger/go-swagger/issues/1724#issuecomment-469335593)
+* codegen: `go generate ./...` [link](https://github.com/go-swagger/go-swagger/issues/1724#issuecomment-469335593)

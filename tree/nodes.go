@@ -106,8 +106,19 @@ type StringNode struct {
 }
 
 func (n *StringNode) updateNode(newVal interface{}) error {
-	val := newVal.(string)
-	*n.raw = val
+	switch val := newVal.(type) {
+	case string:
+		*n.raw = val
+		return nil
+	case *StringNode:
+		*n.raw = *val.raw
+		return nil
+	case StringNode:
+		*n.raw = *val.raw
+		return nil
+	default:
+		return errors.New("unable to set new string value")
+	}
 	return nil
 }
 

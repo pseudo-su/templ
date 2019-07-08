@@ -14,54 +14,54 @@ func failOnError(t *testing.T, err error, msg string) {
 
 func TestFloatRoot(t *testing.T) {
 	tree, err := ReadIntoTree([]byte(`2.11`), YAML)
-	failOnError(t, err, "")
+	failOnError(t, err, "parse float")
 	desc, err := DescribeTree(tree)
-	failOnError(t, err, "")
+	failOnError(t, err, "desc float")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "(num): 2.11")
 }
 
 func TestIntegerRoot(t *testing.T) {
 	tree, err := ReadIntoTree([]byte(`2`), YAML)
-	failOnError(t, err, "")
+	failOnError(t, err, "parse int")
 	desc, err := DescribeTree(tree)
-	failOnError(t, err, "")
+	failOnError(t, err, "desc int")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "(num): 2")
 }
 
 func TestStringRoot(t *testing.T) {
 	tree, err := ReadIntoTree([]byte(`"hello world"`), YAML)
-	failOnError(t, err, "")
+	failOnError(t, err, "parse str")
 	desc, err := DescribeTree(tree)
-	failOnError(t, err, "")
+	failOnError(t, err, "desc str")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "root(str): hello world")
 }
 
 func TestBoolRoot(t *testing.T) {
 	tree, err := ReadIntoTree([]byte(`false`), YAML)
-	failOnError(t, err, "")
+	failOnError(t, err, "parse bool")
 	desc, err := DescribeTree(tree)
-	failOnError(t, err, "")
+	failOnError(t, err, "desc bool")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "(bool): false")
 }
 
 func TestArrayRoot(t *testing.T) {
 	tree, err := ReadIntoTree([]byte(`[MY, WORD]`), YAML)
-	failOnError(t, err, "")
+	failOnError(t, err, "parse array")
 	desc, err := DescribeTree(tree)
-	failOnError(t, err, "")
+	failOnError(t, err, "desc array")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "root(array):\n  [0](str): MY\n  [1](str): WORD")
 }
 
 func TestObjectRoot(t *testing.T) {
 	tree, err := ReadIntoTree([]byte(`{"key":"val"}`), JSON)
-	failOnError(t, err, "")
+	failOnError(t, err, "parse obj")
 	desc, err := DescribeTree(tree)
-	failOnError(t, err, "")
+	failOnError(t, err, "desc obj")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "root(object):\n  key(str): val")
 }
@@ -77,7 +77,7 @@ func TestTreesMatch(t *testing.T) {
 	"string": "string"
 }
 `), JSON)
-	failOnError(t, err, "")
+	failOnError(t, err, "load json")
 	yamlTree, err := ReadIntoTree([]byte(`
 int: 1
 float: 1.1
@@ -90,7 +90,7 @@ array:
 object:
   a: a
 `), YAML)
-	failOnError(t, err, "")
+	failOnError(t, err, "load yaml")
 	tomlTree, err := ReadIntoTree([]byte(`
 array = ["array", "of", "strings"]
 bool = true
@@ -101,7 +101,7 @@ string = "string"
 [object]
 a = "a"
 `), TOML)
-	failOnError(t, err, "")
+	failOnError(t, err, "load toml")
 
 	one, err := DescribeTree(jsonTree)
 	failOnError(t, err, "DescribeTree (json)")

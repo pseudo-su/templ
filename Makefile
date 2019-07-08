@@ -1,22 +1,21 @@
-	GO111MODULE=on
-
-.PHONY: lint
-lint:
-	@echo "TODO"
-
-.PHONY: fmt
-fmt:
-	@echo "TODO"
+GO111MODULE=on
 
 .PHONY: test
 test:
-	@go test ./...
+	go test ./...
 
-.PHONY: clean
-clean:
-	@echo "TODO"
+.PHONY: test.snap
+test.snapshot:
+	UPDATE_SNAPSHOTS=true go test ./...
 
-.PHONY: build
-build:
-	@echo "TODO"
+.PHONY: lint
+lint:
+	./bin/golangci-lint run ./...
 
+.PHONY: codegen
+codegen:
+	go generate ./...
+
+.PHONY: fixturegen
+fixturegen:
+	./test/fixtures/generate-fixtures.sh
