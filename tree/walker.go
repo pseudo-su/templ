@@ -5,7 +5,7 @@ import (
 )
 
 type WalkingContext struct {
-	path   []string
+	path   []ChildKey
 	curr   NodeRef
 	root   NodeRef
 	parent *NodeRef
@@ -32,10 +32,10 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 	switch ctx.curr.nodeType() {
 	case TObjectNode, TArrayNode:
 		containerNode := ctx.curr.node().(ContainerNode)
-		return containerNode.forEach(func(childNode NodeRef, idx int, desc string) error {
-			childPath := []string{}
+		return containerNode.forEach(func(childNode NodeRef, idx int, childKey ChildKey) error {
+			childPath := []ChildKey{}
 			childPath = append(childPath, ctx.path...)
-			childPath = append(childPath, desc)
+			childPath = append(childPath, childKey)
 			childContext := WalkingContext{
 				path:   childPath,
 				root:   ctx.root,

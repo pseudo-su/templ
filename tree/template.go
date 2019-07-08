@@ -9,8 +9,8 @@ import (
 )
 
 type ResolveContext struct {
-	prevPaths [][]string
-	path      []string
+	prevPaths [][]ChildKey
+	path      []ChildKey
 	curr      NodeRef
 	root      NodeRef
 	parent    *NodeRef
@@ -112,7 +112,6 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 		rctx.curr.swapNode(node)
 		return nil
 	}
-	fmt.Println("update string node:", result)
 	// TODO update string node instead of replace
 	newNode := &StringNode{raw: result, templateResolved: true}
 	rctx.curr.swapNode(newNode)
@@ -125,7 +124,7 @@ func ExecuteTreeTemplate(rootNode NodeRef, rootTemplate template.Template) (Node
 		switch ctx.curr.nodeType() {
 		case TStringNode:
 			rctx := ResolveContext{
-				prevPaths: [][]string{},
+				prevPaths: [][]ChildKey{},
 				path:      ctx.path,
 				curr:      ctx.curr,
 				root:      ctx.root,

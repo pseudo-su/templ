@@ -18,8 +18,11 @@ const (
 	TNullNode
 )
 
+type ChildKey string
+
 type ContainerNode interface {
-	forEach(func(childNode NodeRef, idx int, desc string) error) error
+	forEach(func(childNode NodeRef, idx int, desc ChildKey) error) error
+	getChild(ChildKey) (*NodeRef, error)
 }
 
 type StringableNode interface {
@@ -100,6 +103,10 @@ func (n *ObjectNode) nodeType() NodeType {
 	return TObjectNode
 }
 
+func (n *ObjectNode) getChild(childKey ChildKey) (*NodeRef, error) {
+	return nil, errors.New("NOT IMPLEMENTED")
+}
+
 func (n *ObjectNode) isContainer() bool {
 	return true
 }
@@ -147,11 +154,11 @@ func NewObjectNode(v reflect.Value) (*ObjectNode, error) {
 	return &node, nil
 }
 
-func (n *ObjectNode) forEach(fn func(node NodeRef, idx int, desc string) error) error {
+func (n *ObjectNode) forEach(fn func(node NodeRef, idx int, childKey ChildKey) error) error {
 	for idx, key := range n.sortedKeys {
 		childNode := n.raw[key]
-		desc := key
-		err := fn(childNode, idx, desc)
+		childKey := ChildKey(key)
+		err := fn(childNode, idx, childKey)
 		if err != nil {
 			return err
 		}
@@ -220,6 +227,10 @@ func (n *ArrayNode) isContainer() bool {
 	return true
 }
 
+func (n *ArrayNode) getChild(childKey ChildKey) (*NodeRef, error) {
+	return nil, errors.New("NOT IMPLEMENTED")
+}
+
 func NewArrayNodeRef(v reflect.Value) (NodeRef, error) {
 	node, err := NewArrayNode(v)
 	if err != nil {
@@ -245,11 +256,11 @@ func NewArrayNode(v reflect.Value) (*ArrayNode, error) {
 	return &node, nil
 }
 
-func (n *ArrayNode) forEach(fn func(node NodeRef, idx int, desc string) error) error {
+func (n *ArrayNode) forEach(fn func(node NodeRef, idx int, childKey ChildKey) error) error {
 	for idx, _ := range n.raw {
 		childNode := n.raw[idx]
-		desc := fmt.Sprintf("[%v]", idx)
-		err := fn(childNode, idx, desc)
+		childKey := ChildKey(fmt.Sprintf("[%v]", idx))
+		err := fn(childNode, idx, childKey)
 		if err != nil {
 			return err
 		}

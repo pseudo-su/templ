@@ -16,7 +16,7 @@ func descPrefix(ctx WalkingContext) (string, string) {
 	}
 	label := ""
 	if depth > 0 {
-		label = ctx.path[depth-1]
+		label = fmt.Sprintf("%v", ctx.path[depth-1])
 	}
 	return prefix, label
 }
