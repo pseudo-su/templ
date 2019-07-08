@@ -1,148 +1,202 @@
-(*tree.ObjectNode)({
-  raw: (map[string]*tree.Node) (len=4) {
-    (string) (len=8) "test_env": (**tree.ObjectNode)({
-      raw: (map[string]*tree.Node) (len=3) {
-        (string) (len=7) "ref_env": (**tree.StringNode)({
-          raw: (*string)((len=7) "envname"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=17) "ref_env_composite": (**tree.StringNode)({
-          raw: (*string)((len=17) "envname-stagename"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=16) "ref_env_indirect": (**tree.StringNode)({
-          raw: (*string)((len=17) "envname-stagename"),
-          templateResolved: (bool) false
-        })
-      },
-      sortedKeys: ([]string) (len=3) {
-        (string) (len=7) "ref_env",
-        (string) (len=17) "ref_env_composite",
-        (string) (len=16) "ref_env_indirect"
-      }
-    }),
-    (string) (len=9) "test_load": (**tree.ObjectNode)({
-      raw: (map[string]*tree.Node) (len=4) {
-        (string) (len=13) "load_indirect": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: load>"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=9) "load_json": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: load>"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=9) "load_toml": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: load>"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=9) "load_yaml": (**tree.StringNode)({
-          raw: (*string)((len=12) "<TODO: load>"),
-          templateResolved: (bool) false
-        })
-      },
-      sortedKeys: ([]string) (len=4) {
-        (string) (len=13) "load_indirect",
-        (string) (len=9) "load_json",
-        (string) (len=9) "load_toml",
-        (string) (len=9) "load_yaml"
-      }
-    }),
-    (string) (len=10) "test_param": (**tree.ObjectNode)({
-      raw: (map[string]*tree.Node) (len=1) {
-        (string) (len=9) "ref_param": (**tree.StringNode)({
-          raw: (*string)(""),
-          templateResolved: (bool) false
-        })
-      },
-      sortedKeys: ([]string) (len=1) {
-        (string) (len=9) "ref_param"
-      }
-    }),
-    (string) (len=9) "test_self": (**tree.ObjectNode)({
-      raw: (map[string]*tree.Node) (len=10) {
-        (string) (len=9) "literal_1": (**tree.StringNode)({
-          raw: (*string)((len=3) "ONE"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=9) "literal_2": (**tree.StringNode)({
-          raw: (*string)((len=3) "TWO"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=17) "literal_section_1": (**tree.ObjectNode)({
-          raw: (map[string]*tree.Node) (len=2) {
-            (string) (len=5) "val_1": (**tree.StringNode)({
-              raw: (*string)((len=8) "SEC1_ONE"),
-              templateResolved: (bool) false
+(*tree.NodeReference)({
+  n: (*tree.ObjectNode)({
+    raw: (map[string]tree.NodeRef) (len=4) {
+      (string) (len=8) "test_env": (*tree.NodeReference)({
+        n: (*tree.ObjectNode)({
+          raw: (map[string]tree.NodeRef) (len=3) {
+            (string) (len=7) "ref_env": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=7) "envname",
+                templateResolved: (bool) true
+              })
             }),
-            (string) (len=5) "val_2": (**tree.StringNode)({
-              raw: (*string)((len=8) "SEC1_TWO"),
-              templateResolved: (bool) false
+            (string) (len=17) "ref_env_composite": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=17) "envname-stagename",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=16) "ref_env_indirect": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=17) "envname-stagename",
+                templateResolved: (bool) true
+              })
             })
           },
-          sortedKeys: ([]string) (len=2) {
-            (string) (len=5) "val_1",
-            (string) (len=5) "val_2"
+          sortedKeys: ([]string) (len=3) {
+            (string) (len=7) "ref_env",
+            (string) (len=17) "ref_env_composite",
+            (string) (len=16) "ref_env_indirect"
           }
-        }),
-        (string) (len=17) "literal_section_2": (**tree.ObjectNode)({
-          raw: (map[string]*tree.Node) (len=2) {
-            (string) (len=5) "val_1": (**tree.StringNode)({
-              raw: (*string)((len=8) "SEC2_ONE"),
-              templateResolved: (bool) false
+        })
+      }),
+      (string) (len=9) "test_load": (*tree.NodeReference)({
+        n: (*tree.ObjectNode)({
+          raw: (map[string]tree.NodeRef) (len=4) {
+            (string) (len=13) "load_indirect": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=12) "<TODO: load>",
+                templateResolved: (bool) true
+              })
             }),
-            (string) (len=5) "val_2": (**tree.StringNode)({
-              raw: (*string)((len=8) "SEC2_TWO"),
-              templateResolved: (bool) false
+            (string) (len=9) "load_json": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=12) "<TODO: load>",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=9) "load_toml": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=12) "<TODO: load>",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=9) "load_yaml": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=12) "<TODO: load>",
+                templateResolved: (bool) true
+              })
             })
           },
-          sortedKeys: ([]string) (len=2) {
-            (string) (len=5) "val_1",
-            (string) (len=5) "val_2"
+          sortedKeys: ([]string) (len=4) {
+            (string) (len=13) "load_indirect",
+            (string) (len=9) "load_json",
+            (string) (len=9) "load_toml",
+            (string) (len=9) "load_yaml"
           }
-        }),
-        (string) (len=3) "ref": (**tree.StringNode)({
-          raw: (*string)((len=35) "<TODO: self (test_self.literal_1) >"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=13) "ref_composite": (**tree.StringNode)({
-          raw: (*string)((len=47) "<TODO: self (test_self.literal_2) >-Hello World"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=12) "ref_section1": (**tree.StringNode)({
-          raw: (*string)((len=43) "<TODO: self (test_self.literal_section_1) >"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=12) "ref_section2": (**tree.StringNode)({
-          raw: (*string)((len=43) "<TODO: self (test_self.literal_section_2) >"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=20) "ref_section_indirect": (**tree.StringNode)({
-          raw: (*string)((len=80) "<TODO: self (test_self.literal_section_<TODO: self (test_self.use_sections) >) >"),
-          templateResolved: (bool) false
-        }),
-        (string) (len=11) "use_section": (**tree.StringNode)({
-          raw: (*string)((len=1) "1"),
-          templateResolved: (bool) false
         })
-      },
-      sortedKeys: ([]string) (len=10) {
-        (string) (len=9) "literal_1",
-        (string) (len=9) "literal_2",
-        (string) (len=17) "literal_section_1",
-        (string) (len=17) "literal_section_2",
-        (string) (len=3) "ref",
-        (string) (len=13) "ref_composite",
-        (string) (len=12) "ref_section1",
-        (string) (len=12) "ref_section2",
-        (string) (len=20) "ref_section_indirect",
-        (string) (len=11) "use_section"
-      }
-    })
-  },
-  sortedKeys: ([]string) (len=4) {
-    (string) (len=8) "test_env",
-    (string) (len=9) "test_load",
-    (string) (len=10) "test_param",
-    (string) (len=9) "test_self"
-  }
+      }),
+      (string) (len=10) "test_param": (*tree.NodeReference)({
+        n: (*tree.ObjectNode)({
+          raw: (map[string]tree.NodeRef) (len=1) {
+            (string) (len=9) "ref_param": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) "",
+                templateResolved: (bool) true
+              })
+            })
+          },
+          sortedKeys: ([]string) (len=1) {
+            (string) (len=9) "ref_param"
+          }
+        })
+      }),
+      (string) (len=9) "test_self": (*tree.NodeReference)({
+        n: (*tree.ObjectNode)({
+          raw: (map[string]tree.NodeRef) (len=10) {
+            (string) (len=9) "literal_1": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=3) "ONE",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=9) "literal_2": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=3) "TWO",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=17) "literal_section_1": (*tree.NodeReference)({
+              n: (*tree.ObjectNode)({
+                raw: (map[string]tree.NodeRef) (len=2) {
+                  (string) (len=5) "val_1": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC1_ONE",
+                      templateResolved: (bool) true
+                    })
+                  }),
+                  (string) (len=5) "val_2": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC1_TWO",
+                      templateResolved: (bool) true
+                    })
+                  })
+                },
+                sortedKeys: ([]string) (len=2) {
+                  (string) (len=5) "val_1",
+                  (string) (len=5) "val_2"
+                }
+              })
+            }),
+            (string) (len=17) "literal_section_2": (*tree.NodeReference)({
+              n: (*tree.ObjectNode)({
+                raw: (map[string]tree.NodeRef) (len=2) {
+                  (string) (len=5) "val_1": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC2_ONE",
+                      templateResolved: (bool) true
+                    })
+                  }),
+                  (string) (len=5) "val_2": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC2_TWO",
+                      templateResolved: (bool) true
+                    })
+                  })
+                },
+                sortedKeys: ([]string) (len=2) {
+                  (string) (len=5) "val_1",
+                  (string) (len=5) "val_2"
+                }
+              })
+            }),
+            (string) (len=3) "ref": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=35) "<TODO: self (test_self.literal_1) >",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=13) "ref_composite": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=47) "<TODO: self (test_self.literal_2) >-Hello World",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=12) "ref_section1": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=43) "<TODO: self (test_self.literal_section_1) >",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=12) "ref_section2": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=43) "<TODO: self (test_self.literal_section_2) >",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=20) "ref_section_indirect": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=80) "<TODO: self (test_self.literal_section_<TODO: self (test_self.use_sections) >) >",
+                templateResolved: (bool) true
+              })
+            }),
+            (string) (len=11) "use_section": (*tree.NodeReference)({
+              n: (*tree.StringNode)({
+                raw: (string) (len=1) "1",
+                templateResolved: (bool) true
+              })
+            })
+          },
+          sortedKeys: ([]string) (len=10) {
+            (string) (len=9) "literal_1",
+            (string) (len=9) "literal_2",
+            (string) (len=17) "literal_section_1",
+            (string) (len=17) "literal_section_2",
+            (string) (len=3) "ref",
+            (string) (len=13) "ref_composite",
+            (string) (len=12) "ref_section1",
+            (string) (len=12) "ref_section2",
+            (string) (len=20) "ref_section_indirect",
+            (string) (len=11) "use_section"
+          }
+        })
+      })
+    },
+    sortedKeys: ([]string) (len=4) {
+      (string) (len=8) "test_env",
+      (string) (len=9) "test_load",
+      (string) (len=10) "test_param",
+      (string) (len=9) "test_self"
+    }
+  })
 })

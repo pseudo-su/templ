@@ -1,8 +1,6 @@
 package tree
 
 import (
-	// "errors"
-
 	"fmt"
 	"strings"
 )
@@ -23,30 +21,33 @@ func descPrefix(ctx WalkingContext) (string, string) {
 	return prefix, label
 }
 
-func DescribeTree(rootNode Node) (string, error) {
+func DescribeTree(rootNode NodeRef) (string, error) {
 	lines := []string{}
 	err := WalkTree(rootNode, func(ctx WalkingContext) error {
 		indent, label := descPrefix(ctx)
-		switch n := ctx.curr.(type) {
-		case *ObjectNode:
+		switch ctx.curr.nodeType() {
+		case TObjectNode:
 			lines = append(lines, Indent(fmt.Sprintf("%v(object):", label), indent))
-		case *ArrayNode:
+		case TArrayNode:
 			lines = append(lines, Indent(fmt.Sprintf("%v(array):", label), indent))
-		case *StringNode:
-			val := *n.raw
+		case TStringNode:
+			node := ctx.curr.node()
+			val := node.(*StringNode).raw
 			if strings.Contains(val, "\n") {
 				lines = append(lines, Indent(fmt.Sprintf("%v(mstr):", label), indent))
 				lines = append(lines, Indent(val, indent+" > "))
 			} else {
 				lines = append(lines, Indent(fmt.Sprintf("%v(str): %v", label, val), indent))
 			}
-		case *NumberNode:
-			val := *n.raw
+		case TNumberNode:
+			node := ctx.curr.node()
+			val := node.(*NumberNode).raw
 			lines = append(lines, fmt.Sprintf("%v(num): %v", label, val))
-		case *BoolNode:
-			val := *n.raw
+		case TBoolNode:
+			node := ctx.curr.node()
+			val := node.(*BoolNode).raw
 			lines = append(lines, fmt.Sprintf("%v(bool): %v", label, val))
-		case *NullNode:
+		case TNullNode:
 			lines = append(lines, fmt.Sprintf("%v: null", label))
 		default:
 			return fmt.Errorf("unable to describe node")

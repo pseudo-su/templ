@@ -11,29 +11,41 @@ import (
 type ResolveContext struct {
 	prevPaths [][]string
 	path      []string
-	curr      Node
-	root      Node
-	parent    *Node
+	curr      NodeRef
+	root      NodeRef
+	parent    *NodeRef
 }
 
 // func ResolveInTemplate
 
-func CreateSelfFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (string, error) {
+func CreateSelfFn(
+	rctx ResolveContext,
+	resolvedStringableNodes *[]NodeRef,
+	resolvedComplexNodes *[]NodeRef,
+) func(...string) (string, error) {
 	return func(args ...string) (string, error) {
 		// when resolving an object replace
-		node := *ResolvePath(JoinStr(args), rctx)
-		switch node := node.(type) {
-		case *StringNode:
-			return *node.raw, nil
-		case *NumberNode:
-			return fmt.Sprintf("%v", node.raw), nil
-		case *BoolNode:
-			return fmt.Sprintf("%v", node.raw), nil
-		case *ObjectNode:
-			*resolvedNodes = append(*resolvedNodes, node)
+		nodeRef := ResolvePath(JoinStr(args), rctx)
+		switch nodeRef.nodeType() {
+		case TStringNode:
+			node := nodeRef.node()
+			raw := node.(*StringNode).raw
+			return raw, nil
+		case TNumberNode:
+			// TODO: fix number resolve
+			node := nodeRef.node()
+			raw := node.(*NumberNode).raw
+			return fmt.Sprintf("%v", raw), nil
+		case TBoolNode:
+			// TODO: fix bool resolve
+			node := nodeRef.node()
+			raw := node.(*BoolNode).raw
+			return fmt.Sprintf("%v", raw), nil
+		case TObjectNode:
+			*resolvedComplexNodes = append(*resolvedComplexNodes, nodeRef)
 			return "", nil
-		case *ArrayNode:
-			*resolvedNodes = append(*resolvedNodes, node)
+		case TArrayNode:
+			*resolvedComplexNodes = append(*resolvedComplexNodes, nodeRef)
 			return "", nil
 		default:
 			return "", errors.New("unhandled Node type")
@@ -41,28 +53,36 @@ func CreateSelfFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (s
 	}
 }
 
-func CreateFileLoadFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (string, error) {
+func CreateFileLoadFn(
+	rctx ResolveContext,
+	resolvedStringableNodes *[]NodeRef,
+	resolvedComplexNodes *[]NodeRef,
+) func(...string) (string, error) {
 	return func(args ...string) (string, error) {
 		// when resolving an object replace
 		return "<TODO: load>", nil
 	}
 }
 
-func ResolvePath(path string, rctx ResolveContext) *Node {
+func ResolvePath(path string, rctx ResolveContext) NodeRef {
 	// TODO: resolve to the node at a given path
-	val := "<TODO: self (" + path + ") >"
-	var node Node = &StringNode{raw: &val, templateResolved: true}
-	return &node
+	var node Node = &StringNode{raw: "<TODO: self (" + path + ") >", templateResolved: true}
+	// var node Node = &NumberNode{raw: float64(1)}
+	// var node Node = &ArrayNode{}
+	ref := &NodeReference{n: node}
+	return ref
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
-	val := (rctx.curr).(*StringNode).raw
+	node := rctx.curr.node()
+	val := node.(*StringNode).raw
 	// resolvedNodes := map[string]interface{}{}
-	resolvedNodes := []Node{}
+	resolvedStringableNodes := []NodeRef{}
+	resolvedComplexNodes := []NodeRef{}
 	tmpl, err := rootTemplate.Funcs(template.FuncMap{
-		"self": CreateSelfFn(rctx, &resolvedNodes),
-		"load": CreateFileLoadFn(rctx, &resolvedNodes),
-	}).Parse(*val)
+		"self": CreateSelfFn(rctx, &resolvedStringableNodes, &resolvedComplexNodes),
+		"load": CreateFileLoadFn(rctx, &resolvedStringableNodes, &resolvedComplexNodes),
+	}).Parse(val)
 	if err != nil {
 		return err
 	}
@@ -79,35 +99,33 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 
 	result := tpl.String()
 
-	if len(resolvedNodes) > 1 {
+	if len(resolvedComplexNodes) > 1 {
+		fmt.Println(resolvedComplexNodes)
 		return errors.New("a single field can not resolve to multiple complex values")
 	}
 
-	if len(resolvedNodes) == 1 && strings.TrimSpace(result) != "" {
+	if len(resolvedComplexNodes) == 1 && strings.TrimSpace(result) != "" {
 		return errors.New("unable to join strings with complex values")
 	}
 
-	if len(resolvedNodes) == 1 {
-		fmt.Println("replace with node")
-		// rctx.curr.updateNode(resolvedNodes[0])
-	} else {
-		fmt.Println("update string node:", result)
-		rctx.curr.updateNode(result)
-		// var new Node = StringNode{raw: result, templateResolved: true}
-		// *rctx.curr = new
-
-		// TODO: this
-		// fmt.Println("from parent:", (*rctx.parent).(ObjectNode).raw[rctx.path[len(rctx.path)-1]].(StringNode).raw)
-		// fmt.Println("from current:", (*rctx.curr).(StringNode).raw)
+	if len(resolvedComplexNodes) == 1 {
+		fmt.Println("replace string node")
+		node := resolvedComplexNodes[0].node()
+		rctx.curr.swapNode(node)
+		return nil
 	}
+	fmt.Println("update string node:", result)
+	// TODO update string node instead of replace
+	newNode := &StringNode{raw: result, templateResolved: true}
+	rctx.curr.swapNode(newNode)
 
 	return nil
 }
 
-func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, error) {
+func ExecuteTreeTemplate(rootNode NodeRef, rootTemplate template.Template) (NodeRef, error) {
 	err := WalkTree(rootNode, func(ctx WalkingContext) error {
-		switch ctx.curr.(type) {
-		case *StringNode:
+		switch ctx.curr.nodeType() {
+		case TStringNode:
 			rctx := ResolveContext{
 				prevPaths: [][]string{},
 				path:      ctx.path,
@@ -116,7 +134,7 @@ func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, e
 				parent:    ctx.parent,
 			}
 			return ResolveStringNode(rootTemplate, rctx)
-		case *ObjectNode, *ArrayNode:
+		case TObjectNode, TArrayNode:
 			return nil
 		}
 		return nil

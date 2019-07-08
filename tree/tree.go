@@ -41,7 +41,7 @@ func unmarshal(bytes []byte, format FileType) (interface{}, error) {
 	return parsedBytes, nil
 }
 
-func ReadIntoTree(bytes []byte, format FileType) (Node, error) {
+func ReadIntoTree(bytes []byte, format FileType) (NodeRef, error) {
 	parsedVal, err := unmarshal(bytes, format)
 	if err != nil {
 		return nil, err

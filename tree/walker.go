@@ -6,14 +6,14 @@ import (
 
 type WalkingContext struct {
 	path   []string
-	curr   Node
-	root   Node
-	parent *Node
+	curr   NodeRef
+	root   NodeRef
+	parent *NodeRef
 }
 
 type NodeWalkFn func(WalkingContext) error
 
-func WalkTree(node Node, actionFn NodeWalkFn) error {
+func WalkTree(node NodeRef, actionFn NodeWalkFn) error {
 	ctx := WalkingContext{
 		curr:   node,
 		root:   node,
@@ -29,9 +29,9 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 		return err
 	}
 
-	switch node := ctx.curr.(type) {
-	case *ObjectNode:
-		return node.forEach(func(childNode Node, idx int, desc string) error {
+	switch ctx.curr.nodeType() {
+	case TObjectNode:
+		return ctx.curr.forEachChild(func(childNode NodeRef, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)
 			childPath = append(childPath, desc)
@@ -43,8 +43,8 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 			}
 			return WalkTreeCtx(childContext, actionFn)
 		})
-	case *ArrayNode:
-		return node.forEach(func(childNode Node, idx int, desc string) error {
+	case TArrayNode:
+		return ctx.curr.forEachChild(func(childNode NodeRef, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)
 			childPath = append(childPath, desc)
@@ -57,7 +57,7 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 			}
 			return WalkTreeCtx(childContext, actionFn)
 		})
-	case *StringNode, *NumberNode, *BoolNode, *NullNode:
+	case TStringNode, TNumberNode, TBoolNode, TNullNode:
 		return nil
 	default:
 		return errors.New("unknown node type found while walking")

@@ -13,7 +13,7 @@ import (
 type Templ struct {
 	name       *string
 	params     *map[string]string
-	tree       *tree.Node
+	tree       *tree.NodeRef
 	filepath   *string
 	startDelim string
 	endDelim   string
@@ -39,7 +39,7 @@ func (templ Templ) Delims(start, end string) Templ {
 	return templ
 }
 
-func (templ Templ) Tree(name string, tree tree.Node) Templ {
+func (templ Templ) Tree(name string, tree tree.NodeRef) Templ {
 	templ.name = &name
 	templ.tree = &tree
 	return templ
@@ -50,7 +50,7 @@ func (templ Templ) File(filepath string) Templ {
 	return templ
 }
 
-func (templ Templ) Execute() (tree.Node, error) {
+func (templ Templ) Execute() (tree.NodeRef, error) {
 	if templ.tree == nil {
 		if templ.filepath == nil {
 			return nil, errors.New("filepath or tree required")
@@ -85,7 +85,7 @@ func (templ Templ) Execute() (tree.Node, error) {
 	return tree.ExecuteTreeTemplate(*templ.tree, *rootTemplate)
 }
 
-func ReadFileIntoTree(filename string) (tree.Node, error) {
+func ReadFileIntoTree(filename string) (tree.NodeRef, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
