@@ -91,7 +91,11 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 		*rctx.curr = resolvedNodes[0]
 	} else {
 		fmt.Println("update string node:", result)
-		*rctx.parent = StringNode{raw: result, templateResolved: true}
+		*rctx.curr = StringNode{raw: result, templateResolved: true}
+
+		// TODO: this
+		fmt.Println("from parent:", (*rctx.parent).(ObjectNode).raw[rctx.path[len(rctx.path)-1]].(StringNode).raw)
+		fmt.Println("from current:", (*rctx.curr).(StringNode).raw)
 	}
 
 	return nil
