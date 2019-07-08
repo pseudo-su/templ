@@ -1,44 +1,44 @@
 (*tree.ObjectNode)({
-  raw: (map[string]tree.Node) (len=4) {
-    (string) (len=8) "test_env": (tree.ObjectNode) {
-      raw: (map[string]tree.Node) (len=3) {
-        (string) (len=7) "ref_env": (tree.StringNode) {
-          raw: (string) (len=14) "${ env `ENV` }",
+  raw: (map[string]*tree.Node) (len=4) {
+    (string) (len=8) "test_env": (**tree.ObjectNode)({
+      raw: (map[string]*tree.Node) (len=3) {
+        (string) (len=7) "ref_env": (**tree.StringNode)({
+          raw: (*string)((len=7) "envname"),
           templateResolved: (bool) false
-        },
-        (string) (len=17) "ref_env_composite": (tree.StringNode) {
-          raw: (string) (len=31) "${ env `ENV` }-${ env `STAGE` }",
+        }),
+        (string) (len=17) "ref_env_composite": (**tree.StringNode)({
+          raw: (*string)((len=17) "envname-stagename"),
           templateResolved: (bool) false
-        },
-        (string) (len=16) "ref_env_indirect": (tree.StringNode) {
-          raw: (string) (len=49) "${ env `E` `N` `V` }-${ env `S` `T` `A` `G` `E` }",
+        }),
+        (string) (len=16) "ref_env_indirect": (**tree.StringNode)({
+          raw: (*string)((len=17) "envname-stagename"),
           templateResolved: (bool) false
-        }
+        })
       },
       sortedKeys: ([]string) (len=3) {
         (string) (len=7) "ref_env",
         (string) (len=17) "ref_env_composite",
         (string) (len=16) "ref_env_indirect"
       }
-    },
-    (string) (len=9) "test_load": (tree.ObjectNode) {
-      raw: (map[string]tree.Node) (len=4) {
-        (string) (len=13) "load_indirect": (tree.StringNode) {
-          raw: (string) (len=52) "${ (load `./partial.` `yaml` `:section.literal_2`) }",
+    }),
+    (string) (len=9) "test_load": (**tree.ObjectNode)({
+      raw: (map[string]*tree.Node) (len=4) {
+        (string) (len=13) "load_indirect": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: load>"),
           templateResolved: (bool) false
-        },
-        (string) (len=9) "load_json": (tree.StringNode) {
-          raw: (string) (len=36) "${ (load `./partial.json:section`) }",
+        }),
+        (string) (len=9) "load_json": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: load>"),
           templateResolved: (bool) false
-        },
-        (string) (len=9) "load_toml": (tree.StringNode) {
-          raw: (string) (len=48) "${ (load `./partial.toml:::section.literal_2`) }",
+        }),
+        (string) (len=9) "load_toml": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: load>"),
           templateResolved: (bool) false
-        },
-        (string) (len=9) "load_yaml": (tree.StringNode) {
-          raw: (string) (len=37) "${ (load `./partial.yaml::section`) }",
+        }),
+        (string) (len=9) "load_yaml": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: load>"),
           templateResolved: (bool) false
-        }
+        })
       },
       sortedKeys: ([]string) (len=4) {
         (string) (len=13) "load_indirect",
@@ -46,84 +46,84 @@
         (string) (len=9) "load_toml",
         (string) (len=9) "load_yaml"
       }
-    },
-    (string) (len=10) "test_param": (tree.ObjectNode) {
-      raw: (map[string]tree.Node) (len=1) {
-        (string) (len=9) "ref_param": (tree.StringNode) {
-          raw: (string) (len=23) "${ param `some_param` }",
+    }),
+    (string) (len=10) "test_param": (**tree.ObjectNode)({
+      raw: (map[string]*tree.Node) (len=1) {
+        (string) (len=9) "ref_param": (**tree.StringNode)({
+          raw: (*string)(""),
           templateResolved: (bool) false
-        }
+        })
       },
       sortedKeys: ([]string) (len=1) {
         (string) (len=9) "ref_param"
       }
-    },
-    (string) (len=9) "test_self": (tree.ObjectNode) {
-      raw: (map[string]tree.Node) (len=10) {
-        (string) (len=9) "literal_1": (tree.StringNode) {
-          raw: (string) (len=3) "ONE",
+    }),
+    (string) (len=9) "test_self": (**tree.ObjectNode)({
+      raw: (map[string]*tree.Node) (len=10) {
+        (string) (len=9) "literal_1": (**tree.StringNode)({
+          raw: (*string)((len=3) "ONE"),
           templateResolved: (bool) false
-        },
-        (string) (len=9) "literal_2": (tree.StringNode) {
-          raw: (string) (len=3) "TWO",
+        }),
+        (string) (len=9) "literal_2": (**tree.StringNode)({
+          raw: (*string)((len=3) "TWO"),
           templateResolved: (bool) false
-        },
-        (string) (len=17) "literal_section_1": (tree.ObjectNode) {
-          raw: (map[string]tree.Node) (len=2) {
-            (string) (len=5) "val_1": (tree.StringNode) {
-              raw: (string) (len=8) "SEC1_ONE",
+        }),
+        (string) (len=17) "literal_section_1": (**tree.ObjectNode)({
+          raw: (map[string]*tree.Node) (len=2) {
+            (string) (len=5) "val_1": (**tree.StringNode)({
+              raw: (*string)((len=8) "SEC1_ONE"),
               templateResolved: (bool) false
-            },
-            (string) (len=5) "val_2": (tree.StringNode) {
-              raw: (string) (len=8) "SEC1_TWO",
+            }),
+            (string) (len=5) "val_2": (**tree.StringNode)({
+              raw: (*string)((len=8) "SEC1_TWO"),
               templateResolved: (bool) false
-            }
+            })
           },
           sortedKeys: ([]string) (len=2) {
             (string) (len=5) "val_1",
             (string) (len=5) "val_2"
           }
-        },
-        (string) (len=17) "literal_section_2": (tree.ObjectNode) {
-          raw: (map[string]tree.Node) (len=2) {
-            (string) (len=5) "val_1": (tree.StringNode) {
-              raw: (string) (len=8) "SEC2_ONE",
+        }),
+        (string) (len=17) "literal_section_2": (**tree.ObjectNode)({
+          raw: (map[string]*tree.Node) (len=2) {
+            (string) (len=5) "val_1": (**tree.StringNode)({
+              raw: (*string)((len=8) "SEC2_ONE"),
               templateResolved: (bool) false
-            },
-            (string) (len=5) "val_2": (tree.StringNode) {
-              raw: (string) (len=8) "SEC2_TWO",
+            }),
+            (string) (len=5) "val_2": (**tree.StringNode)({
+              raw: (*string)((len=8) "SEC2_TWO"),
               templateResolved: (bool) false
-            }
+            })
           },
           sortedKeys: ([]string) (len=2) {
             (string) (len=5) "val_1",
             (string) (len=5) "val_2"
           }
-        },
-        (string) (len=3) "ref": (tree.StringNode) {
-          raw: (string) (len=31) "${ self `test_self.literal_1` }",
+        }),
+        (string) (len=3) "ref": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: self>"),
           templateResolved: (bool) false
-        },
-        (string) (len=13) "ref_composite": (tree.StringNode) {
-          raw: (string) (len=48) "${ self `test_self.literal_2` }-${`Hello World`}",
+        }),
+        (string) (len=13) "ref_composite": (**tree.StringNode)({
+          raw: (*string)((len=24) "<TODO: self>-Hello World"),
           templateResolved: (bool) false
-        },
-        (string) (len=12) "ref_section1": (tree.StringNode) {
-          raw: (string) (len=39) "${ self `test_self.literal_section_1` }",
+        }),
+        (string) (len=12) "ref_section1": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: self>"),
           templateResolved: (bool) false
-        },
-        (string) (len=12) "ref_section2": (tree.StringNode) {
-          raw: (string) (len=39) "${ self `test_self.literal_section_2` }",
+        }),
+        (string) (len=12) "ref_section2": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: self>"),
           templateResolved: (bool) false
-        },
-        (string) (len=20) "ref_section_indirect": (tree.StringNode) {
-          raw: (string) (len=70) "${ self `test_self.literal_section_` (self `test_self.use_sections`) }",
+        }),
+        (string) (len=20) "ref_section_indirect": (**tree.StringNode)({
+          raw: (*string)((len=12) "<TODO: self>"),
           templateResolved: (bool) false
-        },
-        (string) (len=11) "use_section": (tree.StringNode) {
-          raw: (string) (len=1) "1",
+        }),
+        (string) (len=11) "use_section": (**tree.StringNode)({
+          raw: (*string)((len=1) "1"),
           templateResolved: (bool) false
-        }
+        })
       },
       sortedKeys: ([]string) (len=10) {
         (string) (len=9) "literal_1",
@@ -137,7 +137,7 @@
         (string) (len=20) "ref_section_indirect",
         (string) (len=11) "use_section"
       }
-    }
+    })
   },
   sortedKeys: ([]string) (len=4) {
     (string) (len=8) "test_env",

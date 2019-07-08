@@ -12,14 +12,59 @@ func failOnError(t *testing.T, err error, msg string) {
 	}
 }
 
-// func TestDescribeTree(t *testing.T) {
-// 	tree, err := ReadIntoTree([]byte(`
-// ["array", "of", "strings"]
-// `), JSON)
-// 	failOnError(t, err, "")
-// 	treeDesc, err := DescribeTree(tree)
-// 	failOnError(t, err, "")
-// }
+func TestFloatRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`2.11`), YAML)
+	failOnError(t, err, "")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "(num): 2.11")
+}
+
+func TestIntegerRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`2`), YAML)
+	failOnError(t, err, "")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "(num): 2")
+}
+
+func TestStringRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`"hello world"`), YAML)
+	failOnError(t, err, "")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "root(str): hello world")
+}
+
+func TestBoolRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`false`), YAML)
+	failOnError(t, err, "")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "(bool): false")
+}
+
+func TestArrayRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`[MY, WORD]`), YAML)
+	failOnError(t, err, "")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "root(array):\n  [0](str): MY\n  [1](str): WORD")
+}
+
+func TestObjectRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`{"key":"val"}`), JSON)
+	failOnError(t, err, "")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "root(object):\n  key(str): val")
+}
 
 func TestTreesMatch(t *testing.T) {
 	jsonTree, err := ReadIntoTree([]byte(`
@@ -58,11 +103,11 @@ a = "a"
 `), TOML)
 	failOnError(t, err, "")
 
-	one, err := DescribeTree(&jsonTree)
+	one, err := DescribeTree(jsonTree)
 	failOnError(t, err, "DescribeTree (json)")
-	two, err := DescribeTree(&yamlTree)
+	two, err := DescribeTree(yamlTree)
 	failOnError(t, err, "DescribeTree (yaml)")
-	three, err := DescribeTree(&tomlTree)
+	three, err := DescribeTree(tomlTree)
 	failOnError(t, err, "DescribeTree (toml)")
 
 	t.Log("JSON")

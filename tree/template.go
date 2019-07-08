@@ -11,8 +11,8 @@ import (
 type ResolveContext struct {
 	prevPaths [][]string
 	path      []string
-	curr      *Node
-	root      *Node
+	curr      Node
+	root      Node
 	parent    *Node
 }
 
@@ -23,16 +23,16 @@ func CreateSelfFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string) (s
 		// when resolving an object replace
 		node := *ResolvePath(JoinStr(args), rctx)
 		switch node := node.(type) {
-		case StringNode:
-			return node.raw, nil
-		case NumberNode:
+		case *StringNode:
+			return *node.raw, nil
+		case *NumberNode:
 			return fmt.Sprintf("%v", node.raw), nil
-		case BoolNode:
+		case *BoolNode:
 			return fmt.Sprintf("%v", node.raw), nil
-		case ObjectNode:
+		case *ObjectNode:
 			*resolvedNodes = append(*resolvedNodes, node)
 			return "", nil
-		case ArrayNode:
+		case *ArrayNode:
 			*resolvedNodes = append(*resolvedNodes, node)
 			return "", nil
 		default:
@@ -50,18 +50,19 @@ func CreateFileLoadFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string
 
 func ResolvePath(path string, rctx ResolveContext) *Node {
 	// TODO: resolve to the node at a given path
-	var node Node = StringNode{raw: "test_value_todo", templateResolved: true}
+	val := "<TODO: self (" + path + ") >"
+	var node Node = &StringNode{raw: &val, templateResolved: true}
 	return &node
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
-	val := (*rctx.curr).(StringNode).raw
+	val := (rctx.curr).(*StringNode).raw
 	// resolvedNodes := map[string]interface{}{}
 	resolvedNodes := []Node{}
 	tmpl, err := rootTemplate.Funcs(template.FuncMap{
 		"self": CreateSelfFn(rctx, &resolvedNodes),
 		"load": CreateFileLoadFn(rctx, &resolvedNodes),
-	}).Parse(val)
+	}).Parse(*val)
 	if err != nil {
 		return err
 	}
@@ -88,24 +89,25 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 
 	if len(resolvedNodes) == 1 {
 		fmt.Println("replace with node")
-		*rctx.curr = resolvedNodes[0]
+		// rctx.curr.updateNode(resolvedNodes[0])
 	} else {
 		fmt.Println("update string node:", result)
-		*rctx.curr = StringNode{raw: result, templateResolved: true}
+		rctx.curr.updateNode(result)
+		// var new Node = StringNode{raw: result, templateResolved: true}
+		// *rctx.curr = new
 
 		// TODO: this
-		fmt.Println("from parent:", (*rctx.parent).(ObjectNode).raw[rctx.path[len(rctx.path)-1]].(StringNode).raw)
-		fmt.Println("from current:", (*rctx.curr).(StringNode).raw)
+		// fmt.Println("from parent:", (*rctx.parent).(ObjectNode).raw[rctx.path[len(rctx.path)-1]].(StringNode).raw)
+		// fmt.Println("from current:", (*rctx.curr).(StringNode).raw)
 	}
 
 	return nil
 }
 
-func ExecuteTreeTemplate(rootNode *Node, rootTemplate template.Template) (*Node, error) {
+func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, error) {
 	err := WalkTree(rootNode, func(ctx WalkingContext) error {
-		node := *ctx.curr
-		switch node.(type) {
-		case StringNode:
+		switch ctx.curr.(type) {
+		case *StringNode:
 			rctx := ResolveContext{
 				prevPaths: [][]string{},
 				path:      ctx.path,
@@ -114,7 +116,7 @@ func ExecuteTreeTemplate(rootNode *Node, rootTemplate template.Template) (*Node,
 				parent:    ctx.parent,
 			}
 			return ResolveStringNode(rootTemplate, rctx)
-		case ObjectNode, ArrayNode:
+		case *ObjectNode, *ArrayNode:
 			return nil
 		}
 		return nil

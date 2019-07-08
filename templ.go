@@ -39,9 +39,9 @@ func (templ Templ) Delims(start, end string) Templ {
 	return templ
 }
 
-func (templ Templ) Tree(name string, tree *tree.Node) Templ {
+func (templ Templ) Tree(name string, tree tree.Node) Templ {
 	templ.name = &name
-	templ.tree = tree
+	templ.tree = &tree
 	return templ
 }
 
@@ -50,7 +50,7 @@ func (templ Templ) File(filepath string) Templ {
 	return templ
 }
 
-func (templ Templ) Execute() (*tree.Node, error) {
+func (templ Templ) Execute() (tree.Node, error) {
 	if templ.tree == nil {
 		if templ.filepath == nil {
 			return nil, errors.New("filepath or tree required")
@@ -82,7 +82,7 @@ func (templ Templ) Execute() (*tree.Node, error) {
 	}).Delims(templ.startDelim, templ.endDelim)
 
 	// Walk tree and execute templating logic for any string fields
-	return tree.ExecuteTreeTemplate(templ.tree, *rootTemplate)
+	return tree.ExecuteTreeTemplate(*templ.tree, *rootTemplate)
 }
 
 func ReadFileIntoTree(filename string) (tree.Node, error) {
