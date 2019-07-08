@@ -18,12 +18,18 @@ const (
 	TNullNode
 )
 
+type ContainerNode interface {
+	forEach(func(childNode NodeRef, idx int, desc string) error) error
+}
+
+type StringableNode interface {
+	valStr() string
+}
+
 type NodeRef interface {
 	swapNode(n Node)
 	nodeType() NodeType
-	// raw() interface{}
 	node() Node
-	forEachChild(func(childNode NodeRef, idx int, desc string) error) error
 }
 
 type NodeReference struct {
@@ -42,18 +48,9 @@ func (ref *NodeReference) nodeType() NodeType {
 	return ref.n.nodeType()
 }
 
-func (ref *NodeReference) forEachChild(executeFn func(childNode NodeRef, idx int, desc string) error) error {
-	switch node := ref.n.(type) {
-	case *ObjectNode:
-		return node.forEach(executeFn)
-	case *ArrayNode:
-		return node.forEach(executeFn)
-	}
-	return nil
-}
-
 type Node interface {
 	nodeType() NodeType
+	isContainer() bool
 }
 
 func NewNode(v reflect.Value) (NodeRef, error) {
@@ -101,6 +98,10 @@ type ObjectNode struct {
 
 func (n *ObjectNode) nodeType() NodeType {
 	return TObjectNode
+}
+
+func (n *ObjectNode) isContainer() bool {
+	return true
 }
 
 type Entry struct {
@@ -167,6 +168,14 @@ func (n *StringNode) nodeType() NodeType {
 	return TStringNode
 }
 
+func (n *StringNode) isContainer() bool {
+	return false
+}
+
+func (n *StringNode) valStr() string {
+	return n.raw
+}
+
 func (n *StringNode) updateNode(newVal interface{}) error {
 	switch val := newVal.(type) {
 	case string:
@@ -191,12 +200,24 @@ func (n *NumberNode) nodeType() NodeType {
 	return TNumberNode
 }
 
+func (n *NumberNode) isContainer() bool {
+	return false
+}
+
+func (n *NumberNode) valStr() string {
+	return fmt.Sprintf("%v", n.raw)
+}
+
 type ArrayNode struct {
 	raw []NodeRef
 }
 
 func (n *ArrayNode) nodeType() NodeType {
 	return TArrayNode
+}
+
+func (n *ArrayNode) isContainer() bool {
+	return true
 }
 
 func NewArrayNodeRef(v reflect.Value) (NodeRef, error) {
@@ -244,8 +265,24 @@ func (n *BoolNode) nodeType() NodeType {
 	return TBoolNode
 }
 
+func (n *BoolNode) isContainer() bool {
+	return false
+}
+
+func (n *BoolNode) valStr() string {
+	return fmt.Sprintf("%v", n.raw)
+}
+
 type NullNode struct{}
 
 func (n *NullNode) nodeType() NodeType {
 	return TNullNode
+}
+
+func (n *NullNode) isContainer() bool {
+	return false
+}
+
+func (n *NullNode) valStr() string {
+	return "null"
 }

@@ -32,7 +32,7 @@ func DescribeTree(rootNode NodeRef) (string, error) {
 			lines = append(lines, Indent(fmt.Sprintf("%v(array):", label), indent))
 		case TStringNode:
 			node := ctx.curr.node()
-			val := node.(*StringNode).raw
+			val := node.(StringableNode).valStr()
 			if strings.Contains(val, "\n") {
 				lines = append(lines, Indent(fmt.Sprintf("%v(mstr):", label), indent))
 				lines = append(lines, Indent(val, indent+" > "))
@@ -41,11 +41,11 @@ func DescribeTree(rootNode NodeRef) (string, error) {
 			}
 		case TNumberNode:
 			node := ctx.curr.node()
-			val := node.(*NumberNode).raw
+			val := node.(StringableNode).valStr()
 			lines = append(lines, fmt.Sprintf("%v(num): %v", label, val))
 		case TBoolNode:
 			node := ctx.curr.node()
-			val := node.(*BoolNode).raw
+			val := node.(StringableNode).valStr()
 			lines = append(lines, fmt.Sprintf("%v(bool): %v", label, val))
 		case TNullNode:
 			lines = append(lines, fmt.Sprintf("%v: null", label))

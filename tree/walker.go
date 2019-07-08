@@ -30,25 +30,12 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 	}
 
 	switch ctx.curr.nodeType() {
-	case TObjectNode:
-		return ctx.curr.forEachChild(func(childNode NodeRef, idx int, desc string) error {
+	case TObjectNode, TArrayNode:
+		containerNode := ctx.curr.node().(ContainerNode)
+		return containerNode.forEach(func(childNode NodeRef, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)
 			childPath = append(childPath, desc)
-			childContext := WalkingContext{
-				path:   childPath,
-				root:   ctx.root,
-				curr:   childNode,
-				parent: &ctx.curr,
-			}
-			return WalkTreeCtx(childContext, actionFn)
-		})
-	case TArrayNode:
-		return ctx.curr.forEachChild(func(childNode NodeRef, idx int, desc string) error {
-			childPath := []string{}
-			childPath = append(childPath, ctx.path...)
-			childPath = append(childPath, desc)
-
 			childContext := WalkingContext{
 				path:   childPath,
 				root:   ctx.root,

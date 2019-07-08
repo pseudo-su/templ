@@ -27,24 +27,11 @@ func CreateSelfFn(
 		// when resolving an object replace
 		nodeRef := ResolvePath(JoinStr(args), rctx)
 		switch nodeRef.nodeType() {
-		case TStringNode:
-			node := nodeRef.node()
-			raw := node.(*StringNode).raw
-			return raw, nil
-		case TNumberNode:
-			// TODO: fix number resolve
-			node := nodeRef.node()
-			raw := node.(*NumberNode).raw
-			return fmt.Sprintf("%v", raw), nil
-		case TBoolNode:
-			// TODO: fix bool resolve
-			node := nodeRef.node()
-			raw := node.(*BoolNode).raw
-			return fmt.Sprintf("%v", raw), nil
-		case TObjectNode:
-			*resolvedComplexNodes = append(*resolvedComplexNodes, nodeRef)
-			return "", nil
-		case TArrayNode:
+		case TStringNode, TNumberNode, TBoolNode, TNullNode:
+			*resolvedStringableNodes = append(*resolvedStringableNodes, nodeRef)
+			node := nodeRef.node().(StringableNode)
+			return node.valStr(), nil
+		case TObjectNode, TArrayNode:
 			*resolvedComplexNodes = append(*resolvedComplexNodes, nodeRef)
 			return "", nil
 		default:
@@ -67,7 +54,7 @@ func CreateFileLoadFn(
 func ResolvePath(path string, rctx ResolveContext) NodeRef {
 	// TODO: resolve to the node at a given path
 	var node Node = &StringNode{raw: "<TODO: self (" + path + ") >", templateResolved: true}
-	// var node Node = &NumberNode{raw: float64(1)}
+	// var node Node = &NumberNode{raw: float64(999)}
 	// var node Node = &ArrayNode{}
 	ref := &NodeReference{n: node}
 	return ref
@@ -98,6 +85,17 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 	}
 
 	result := tpl.String()
+
+	// TODO: check if there is a single resolveStringableNodes
+	// if it exactly matches the
+	if len(resolvedStringableNodes) == 1 {
+		node := resolvedStringableNodes[0].node().(StringableNode)
+		valStr := node.valStr()
+		if strings.TrimSpace(result) == valStr {
+			rctx.curr.swapNode(resolvedStringableNodes[0].node())
+			return nil
+		}
+	}
 
 	if len(resolvedComplexNodes) > 1 {
 		fmt.Println(resolvedComplexNodes)
@@ -134,10 +132,11 @@ func ExecuteTreeTemplate(rootNode NodeRef, rootTemplate template.Template) (Node
 				parent:    ctx.parent,
 			}
 			return ResolveStringNode(rootTemplate, rctx)
-		case TObjectNode, TArrayNode:
+		case TObjectNode, TArrayNode, TBoolNode, TNullNode, TNumberNode:
 			return nil
+		default:
+			return errors.New("unknown node type")
 		}
-		return nil
 	})
 
 	if err != nil {
