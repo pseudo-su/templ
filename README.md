@@ -1,6 +1,46 @@
-# Golang Service Template
+# Templ
 
-## Quickstart
+Templ is a library to allow loading structured data (YAML/JSON/TOML) and applying go-like templating to the string fields, enabling relative references to the same document.
+
+EXAMPLE INPUT:
+
+```yaml
+data:
+  string: Hello World
+  array:
+    - Array
+    - of
+    - strings
+  object:
+    key: val
+example_1: ${ self `data.string` }
+example_2: ${ self `data.array` }
+example_2: ${ self `data.object` }
+```
+
+OUTPUT:
+
+```yaml
+data:
+  string: Hello World
+  array:
+    - Array
+    - of
+    - strings
+  object:
+    key: val
+example_1: Hello World
+example_2:
+  array:
+    - Array
+    - of
+    - strings
+example_2:
+  object:
+    key: val
+```
+
+## Contributing
 
 ### Install Tool Dependencies
 
@@ -15,15 +55,6 @@ env GO111MODULE=off go get -u github.com/myitcv/gobin
 
 **NOTE**: if this repo is cloned into you `GOPATH` you will need to prefix all commands with `GO111MODULES=on`
 
-* start: `go run ./cmd`
 * test: `go test ./...`
 * lint: `./bin/golangci-lint run ./...`
-* build: `go build -o golang-service-template ./cmd`
 * code gen: `go generate ./...` [link](https://github.com/go-swagger/go-swagger/issues/1724#issuecomment-469335593)
-
-### Build & run docker container
-
-```shell
-docker build -t golang-service-template .
-docker run -p 8080:80 golang-service-template
-```
