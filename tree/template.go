@@ -50,12 +50,11 @@ func CreateFileLoadFn(rctx ResolveContext, resolvedNodes *[]Node) func(...string
 
 func ResolvePath(path string, rctx ResolveContext) *Node {
 	// TODO: resolve to the node at a given path
-	var node Node = StringNode{raw: "test", templateResolved: true}
+	var node Node = StringNode{raw: "test_value_todo", templateResolved: true}
 	return &node
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
-	curr := (*rctx.curr).(StringNode)
 	val := (*rctx.curr).(StringNode).raw
 	// resolvedNodes := map[string]interface{}{}
 	resolvedNodes := []Node{}
@@ -86,23 +85,23 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 	if len(resolvedNodes) == 1 && strings.TrimSpace(result) != "" {
 		return errors.New("unable to join strings with complex values")
 	}
+
 	if len(resolvedNodes) == 1 {
-		rctx.curr = &resolvedNodes[0]
+		fmt.Println("replace with node")
+		*rctx.curr = resolvedNodes[0]
 	} else {
-		curr.raw = result
+		fmt.Println("update string node:", result)
+		*rctx.parent = StringNode{raw: result, templateResolved: true}
 	}
 
 	return nil
 }
 
-func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, error) {
-	fmt.Println("walk and execute")
+func ExecuteTreeTemplate(rootNode *Node, rootTemplate template.Template) (*Node, error) {
 	err := WalkTree(rootNode, func(ctx WalkingContext) error {
-		fmt.Println("execute")
 		node := *ctx.curr
 		switch node.(type) {
 		case StringNode:
-			fmt.Println("exectue string template")
 			rctx := ResolveContext{
 				prevPaths: [][]string{},
 				path:      ctx.path,
@@ -111,9 +110,15 @@ func ExecuteTreeTemplate(rootNode Node, rootTemplate template.Template) (Node, e
 				parent:    ctx.parent,
 			}
 			return ResolveStringNode(rootTemplate, rctx)
+		case ObjectNode, ArrayNode:
+			return nil
 		}
 		return nil
 	})
 
-	return rootNode, err
+	if err != nil {
+		return nil, err
+	}
+
+	return rootNode, nil
 }

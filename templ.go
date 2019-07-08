@@ -20,9 +20,11 @@ type Templ struct {
 }
 
 func New() Templ {
+	defaultParams := map[string]string{}
 	return Templ{
 		startDelim: "${",
 		endDelim:   "}",
+		params:     &defaultParams,
 	}
 }
 
@@ -37,9 +39,9 @@ func (templ Templ) Delims(start, end string) Templ {
 	return templ
 }
 
-func (templ Templ) Tree(name string, tree tree.Node) Templ {
+func (templ Templ) Tree(name string, tree *tree.Node) Templ {
 	templ.name = &name
-	templ.tree = &tree
+	templ.tree = tree
 	return templ
 }
 
@@ -48,8 +50,11 @@ func (templ Templ) File(filepath string) Templ {
 	return templ
 }
 
-func (templ Templ) Execute() (tree.Node, error) {
-	if templ.tree == nil && templ.filepath != nil {
+func (templ Templ) Execute() (*tree.Node, error) {
+	if templ.tree == nil {
+		if templ.filepath == nil {
+			return nil, errors.New("filepath or tree required")
+		}
 		t, err := ReadFileIntoTree(*templ.filepath)
 		if err != nil {
 			return nil, err
@@ -90,7 +95,7 @@ func ReadFileIntoTree(filename string) (tree.Node, error) {
 	switch {
 	case strings.HasSuffix(filename, ".json"):
 		format = tree.JSON
-	case strings.HasSuffix(filename, ".yml") || strings.HasSuffix(filename, ".yaml"):
+	case strings.HasSuffix(filename, ".yaml") || strings.HasSuffix(filename, ".yml"):
 		format = tree.YAML
 	case strings.HasSuffix(filename, ".toml"):
 		format = tree.TOML

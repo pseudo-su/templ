@@ -58,11 +58,11 @@ a = "a"
 `), TOML)
 	failOnError(t, err, "")
 
-	one, err := DescribeTree(jsonTree)
+	one, err := DescribeTree(&jsonTree)
 	failOnError(t, err, "DescribeTree (json)")
-	two, err := DescribeTree(yamlTree)
+	two, err := DescribeTree(&yamlTree)
 	failOnError(t, err, "DescribeTree (yaml)")
-	three, err := DescribeTree(tomlTree)
+	three, err := DescribeTree(&tomlTree)
 	failOnError(t, err, "DescribeTree (toml)")
 
 	t.Log("JSON")

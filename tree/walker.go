@@ -2,7 +2,6 @@ package tree
 
 import (
 	"errors"
-	"fmt"
 )
 
 // import "errors"
@@ -16,28 +15,27 @@ type WalkingContext struct {
 
 type NodeWalkFn func(WalkingContext) error
 
-func WalkTree(node Node, actionFn NodeWalkFn) error {
+func WalkTree(node *Node, actionFn NodeWalkFn) error {
 	ctx := WalkingContext{
-		curr:   &node,
-		root:   &node,
+		curr:   node,
+		root:   node,
 		parent: nil,
 	}
 	return WalkTreeCtx(ctx, actionFn)
 }
 
 func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
-	fmt.Println("walk tree")
 	// Invoke action on current node
 	err := actionFn(ctx)
 	if err != nil {
 		return err
 	}
+
 	// Continue walking if applicable
 	node := *ctx.curr
 
 	switch node := node.(type) {
 	case ObjectNode:
-		fmt.Println("walk object node")
 		return node.forEach(func(childNode *Node, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)
@@ -51,7 +49,6 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 			return WalkTreeCtx(childContext, actionFn)
 		})
 	case ArrayNode:
-		fmt.Println("walk array node")
 		return node.forEach(func(childNode *Node, idx int, desc string) error {
 			childPath := []string{}
 			childPath = append(childPath, ctx.path...)

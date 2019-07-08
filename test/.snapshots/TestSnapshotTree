@@ -1,4 +1,4 @@
-(tree.ObjectNode) {
+(*tree.ObjectNode)({
   raw: (map[string]tree.Node) (len=4) {
     (string) (len=8) "test_env": (tree.ObjectNode) {
       raw: (map[string]tree.Node) (len=3) {
@@ -145,4 +145,4 @@
     (string) (len=10) "test_param",
     (string) (len=9) "test_self"
   }
-}
+})

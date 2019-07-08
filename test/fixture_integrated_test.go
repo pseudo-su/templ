@@ -13,11 +13,11 @@ import (
 func TestDifferentFiletypeLoad(t *testing.T) {
 	os.Setenv("ENV", "envname")
 	os.Setenv("STAGE", "stagename")
-	jsonTree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.json").Execute()
+	jsonTree, err := templ.New().File("fixtures/integrated/index.json").Execute()
 	failOnError(t, err, "")
-	yamlTree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.yaml").Execute()
+	yamlTree, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
 	failOnError(t, err, "")
-	tomlTree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.toml").Execute()
+	tomlTree, err := templ.New().File("fixtures/integrated/index.toml").Execute()
 	failOnError(t, err, "")
 
 	one, err := templTree.DescribeTree(jsonTree)
@@ -43,7 +43,7 @@ func TestSnapshotTree(t *testing.T) {
 	os.Setenv("ENV", "envname")
 	os.Setenv("STAGE", "stagename")
 
-	tree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.yaml").Execute()
+	tree, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
 	failOnError(t, err, "")
 
 	cupaloy.SnapshotT(t, tree)
@@ -53,7 +53,7 @@ func TestSnapshotDescription(t *testing.T) {
 	os.Setenv("ENV", "envname")
 	os.Setenv("STAGE", "stagename")
 
-	tree, err := templ.New().Params(map[string]string{}).File("fixtures/integrated/index.yaml").Execute()
+	tree, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
 	failOnError(t, err, "")
 
 	treeDescription, err := templTree.DescribeTree(tree)

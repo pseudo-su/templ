@@ -20,7 +20,7 @@ func failOnError(t *testing.T, err error, msg string) {
 }
 
 func assertContains(shouldContain string) func(*testing.T, string) {
-	re := regexp.MustCompile(`(` + shouldContain + `)`)
+	re := regexp.MustCompile(`(` + regexp.QuoteMeta(shouldContain) + `)`)
 
 	return func(t *testing.T, treeString string) {
 		instances := len(re.FindAllString(treeString, -1))
@@ -30,7 +30,7 @@ func assertContains(shouldContain string) func(*testing.T, string) {
 }
 
 func assertContainsN(shouldContain string, desiredCount int) func(*testing.T, string) {
-	re := regexp.MustCompile(`(` + shouldContain + `)`)
+	re := regexp.MustCompile(`(` + regexp.QuoteMeta(shouldContain) + `)`)
 
 	return func(t *testing.T, treeString string) {
 		instances := len(re.FindAllString(treeString, -1))
@@ -51,14 +51,21 @@ func evalAnd(t *testing.T, templateStr string, paramsArg *map[string]string, for
 
 	inputTree, err := tree.ReadIntoTree([]byte(templateStr), format)
 	failOnError(t, err, "")
-	outputTree, err := templ.New().Params(params).Tree("test", inputTree).Execute()
+	inputDesc, err := templTree.DescribeTree(&inputTree)
 	failOnError(t, err, "")
-	treeString, err := templTree.DescribeTree(outputTree)
+
+	t.Log("INPUT TREE:")
+	t.Log(inputDesc)
+
+	outputTree, err := templ.New().Params(params).Tree("test", &inputTree).Execute()
+	failOnError(t, err, "")
+	outputDesc, err := templTree.DescribeTree(outputTree)
 	failOnError(t, err, "")
 
 	t.Log("TREE:")
 	t.Log(outputTree)
 	t.Log("TREE DESC:")
-	t.Log(treeString)
-	assertFn(t, treeString)
+	t.Log(outputDesc)
+
+	assertFn(t, outputDesc)
 }
