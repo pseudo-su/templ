@@ -1,0 +1,35 @@
+([]tree.NodePath) (len=7) {
+  (tree.NodePath) (len=1) {
+    (tree.ChildKey) (len=4) "root"
+  },
+  (tree.NodePath) (len=2) {
+    (tree.ChildKey) "",
+    (tree.ChildKey) (len=1) "0"
+  },
+  (tree.NodePath) (len=2) {
+    (tree.ChildKey) (len=4) "root",
+    (tree.ChildKey) (len=5) "child"
+  },
+  (tree.NodePath) (len=2) {
+    (tree.ChildKey) (len=4) "root",
+    (tree.ChildKey) (len=5) "child"
+  },
+  (tree.NodePath) (len=3) {
+    (tree.ChildKey) (len=4) "root",
+    (tree.ChildKey) (len=1) "0",
+    (tree.ChildKey) (len=5) "child"
+  },
+  (tree.NodePath) (len=3) {
+    (tree.ChildKey) (len=4) "root",
+    (tree.ChildKey) (len=1) "0",
+    (tree.ChildKey) (len=5) "child"
+  },
+  (tree.NodePath) (len=6) {
+    (tree.ChildKey) (len=4) "root",
+    (tree.ChildKey) (len=1) "0",
+    (tree.ChildKey) (len=5) "child",
+    (tree.ChildKey) (len=1) "0",
+    (tree.ChildKey) (len=5) "hello",
+    (tree.ChildKey) (len=5) "world"
+  }
+}

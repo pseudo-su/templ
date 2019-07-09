@@ -25,7 +25,10 @@ func CreateSelfFn(
 ) func(...string) (string, error) {
 	return func(args ...string) (string, error) {
 		// when resolving an object replace
-		nodeRef := ResolvePath(JoinStr(args), rctx)
+		nodeRef, err := ResolvePath(JoinStr(args), rctx)
+		if err != nil {
+			return "", errors.New("unable to resolve node at path")
+		}
 		switch nodeRef.nodeType() {
 		case TStringNode, TNumberNode, TBoolNode, TNullNode:
 			*resolvedStringableNodes = append(*resolvedStringableNodes, nodeRef)
@@ -51,13 +54,13 @@ func CreateFileLoadFn(
 	}
 }
 
-func ResolvePath(path string, rctx ResolveContext) NodeRef {
+func ResolvePath(selectStr string, rctx ResolveContext) (NodeRef, error) {
 	// TODO: resolve to the node at a given path
-	var node Node = &StringNode{raw: "<TODO: self (" + path + ") >", templateResolved: true}
+	// var node Node = &StringNode{raw: "<TODO: self (" + selectStr + ") >", templateResolved: true}
 	// var node Node = &NumberNode{raw: float64(999)}
 	// var node Node = &ArrayNode{}
-	ref := &NodeReference{n: node}
-	return ref
+	// ref := &NodeReference{n: node}
+	return rctx.curr.selectNode(selectStr)
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
@@ -86,13 +89,11 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 
 	result := tpl.String()
 
-	// TODO: check if there is a single resolveStringableNodes
-	// if it exactly matches the
-	if len(resolvedStringableNodes) == 1 {
-		node := resolvedStringableNodes[0].node().(StringableNode)
+	for _, nodeRef := range resolvedStringableNodes {
+		node := nodeRef.node().(StringableNode)
 		valStr := node.valStr()
 		if strings.TrimSpace(result) == valStr {
-			rctx.curr.swapNode(resolvedStringableNodes[0].node())
+			rctx.curr.swapNode(nodeRef.node())
 			return nil
 		}
 	}

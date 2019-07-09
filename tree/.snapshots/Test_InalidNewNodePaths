@@ -1,0 +1,6 @@
+([]error) (len=4) {
+  (*errors.errorString)(invalid path string: empty string),
+  (*errors.errorString)(invalid path string: unexpected character "]"),
+  (*errors.errorString)(invalid path string: unexpected character "["),
+  (*errors.errorString)(invalid path string: unexpected end of string)
+}
