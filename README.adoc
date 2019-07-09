@@ -68,6 +68,11 @@ example_self_3: ${ self `data.object` }
 }
 ----
 
+== Inspired by
+
+* link:https://serverless.com/framework/docs/providers/aws/guide/variables#syntax[Serverless framework templating]
+* link:https://packagist.org/packages/grasmash/yaml-expander[Yaml Expander (PHP)]
+
 == Contributing
 
 === Install Tool Dependencies
