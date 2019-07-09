@@ -13,6 +13,16 @@ test_case: Hello ${ self "values.your_name" }
 	evalAnd(t, template, nil, nil, assertContains("Hello bob"))
 }
 
+// TODO
+// func TestSelfInvalid(t *testing.T) {
+// 	template := `
+// values:
+//   your_name: bob
+// test_case: ${ self "values.not_valid_path" }
+// `
+// 	evalAnd(t, template, nil, nil, assertContains("Hello bob"))
+// }
+
 func TestSelfBasic2(t *testing.T) {
 	template := `
 values:

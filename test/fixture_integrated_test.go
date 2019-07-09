@@ -6,7 +6,7 @@ import (
 
 	cupaloy "github.com/bradleyjkemp/cupaloy"
 	"github.com/pseudo-su/templ"
-	templTree "github.com/pseudo-su/templ/tree"
+	"github.com/pseudo-su/templ/tree"
 	"gotest.tools/assert"
 )
 
@@ -20,11 +20,11 @@ func TestDifferentFiletypeLoad(t *testing.T) {
 	tomlTree, err := templ.New().File("fixtures/integrated/index.toml").Execute()
 	failOnError(t, err, "load index.toml")
 
-	one, err := templTree.DescribeTree(jsonTree)
+	one, err := tree.DescribeTree(jsonTree)
 	failOnError(t, err, "describe json")
-	two, err := templTree.DescribeTree(yamlTree)
+	two, err := tree.DescribeTree(yamlTree)
 	failOnError(t, err, "describe yaml")
-	three, err := templTree.DescribeTree(tomlTree)
+	three, err := tree.DescribeTree(tomlTree)
 	failOnError(t, err, "describe toml")
 
 	t.Log("JSON")
@@ -37,26 +37,27 @@ func TestDifferentFiletypeLoad(t *testing.T) {
 	// Assert all trees are the same
 	assert.DeepEqual(t, one, two)
 	assert.DeepEqual(t, two, three)
+	cupaloy.SnapshotT(t, two)
 }
 
 func TestSnapshotTree(t *testing.T) {
 	os.Setenv("ENV", "envname")
 	os.Setenv("STAGE", "stagename")
 
-	tree, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
+	tr, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
 	failOnError(t, err, "execute templ")
 
-	cupaloy.SnapshotT(t, tree)
+	cupaloy.SnapshotT(t, tr)
 }
 
 func TestSnapshotDescription(t *testing.T) {
 	os.Setenv("ENV", "envname")
 	os.Setenv("STAGE", "stagename")
 
-	tree, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
+	tr, err := templ.New().File("fixtures/integrated/index.yaml").Execute()
 	failOnError(t, err, "execute templ")
 
-	treeDescription, err := templTree.DescribeTree(tree)
+	treeDescription, err := tree.DescribeTree(tr)
 	failOnError(t, err, "describe tree")
 
 	cupaloy.SnapshotT(t, treeDescription)

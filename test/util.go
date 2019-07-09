@@ -8,7 +8,6 @@ import (
 
 	"github.com/pseudo-su/templ"
 	"github.com/pseudo-su/templ/tree"
-	templTree "github.com/pseudo-su/templ/tree"
 	"gotest.tools/assert"
 )
 
@@ -29,6 +28,7 @@ func assertContains(shouldContain string) func(*testing.T, string) {
 	}
 }
 
+// nolint:unparam
 func assertContainsN(shouldContain string, desiredCount int) func(*testing.T, string) {
 	re := regexp.MustCompile(`(` + regexp.QuoteMeta(shouldContain) + `)`)
 
@@ -39,6 +39,7 @@ func assertContainsN(shouldContain string, desiredCount int) func(*testing.T, st
 	}
 }
 
+// nolint:unparam
 func evalAnd(t *testing.T, templateStr string, paramsArg *map[string]string, formatArg *tree.FileType, assertFn func(*testing.T, string)) {
 	format := tree.YAML
 	if formatArg != nil {
@@ -51,7 +52,7 @@ func evalAnd(t *testing.T, templateStr string, paramsArg *map[string]string, for
 
 	inputTree, err := tree.ReadIntoTree([]byte(templateStr), format)
 	failOnError(t, err, "read into tree")
-	inputDesc, err := templTree.DescribeTree(inputTree)
+	inputDesc, err := tree.DescribeTree(inputTree)
 	failOnError(t, err, "describe tree")
 
 	t.Log("INPUT TREE:")
@@ -59,7 +60,7 @@ func evalAnd(t *testing.T, templateStr string, paramsArg *map[string]string, for
 
 	outputTree, err := templ.New().Params(params).Tree("test", inputTree).Execute()
 	failOnError(t, err, "execute templ")
-	outputDesc, err := templTree.DescribeTree(outputTree)
+	outputDesc, err := tree.DescribeTree(outputTree)
 	failOnError(t, err, "describe outputTree")
 
 	t.Log("TREE DESC:")

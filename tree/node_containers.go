@@ -15,13 +15,14 @@ type ContainerNode interface {
 
 type ChildKey string
 
+// nolint:unparam
 func (k *ChildKey) asMapKey() (string, error) {
 	str := *k
-	lastIdx := len(str) - 1
-	if string(str[0]) == "[" && string(str[lastIdx]) == "]" {
-		return string(str[1:lastIdx]), nil
-	}
-	return "", errors.New("invalid key")
+	// lastIdx := len(str) - 1
+	// if string(str[0]) == "[" && string(str[lastIdx]) == "]" {
+	// 	return string(str[1:lastIdx]), nil
+	// }
+	return string(str), nil
 }
 
 func (k *ChildKey) asArrayIdx() (int, error) {
@@ -106,7 +107,7 @@ func NewObjectNode(v reflect.Value) (*ObjectNode, error) {
 func (n *ObjectNode) forEach(fn func(node NodeRef, idx int, childKey ChildKey) error) error {
 	for idx, key := range n.sortedKeys {
 		childNode := n.raw[key]
-		childKey := ChildKey(fmt.Sprintf("[%v]", key))
+		childKey := ChildKey(key)
 		err := fn(childNode, idx, childKey)
 		if err != nil {
 			return err
@@ -162,9 +163,9 @@ func NewArrayNode(v reflect.Value) (*ArrayNode, error) {
 }
 
 func (n *ArrayNode) forEach(fn func(node NodeRef, idx int, childKey ChildKey) error) error {
-	for idx, _ := range n.raw {
+	for idx := range n.raw {
 		childNode := n.raw[idx]
-		childKey := ChildKey(fmt.Sprintf("[%v]", idx))
+		childKey := ChildKey(fmt.Sprintf("%v", idx))
 		err := fn(childNode, idx, childKey)
 		if err != nil {
 			return err

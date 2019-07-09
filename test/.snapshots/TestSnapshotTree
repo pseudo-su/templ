@@ -142,32 +142,80 @@
             }),
             (string) (len=3) "ref": (*tree.NodeReference)({
               n: (*tree.StringNode)({
-                raw: (string) (len=35) "<TODO: self (test_self.literal_1) >",
+                raw: (string) (len=3) "ONE",
                 templateResolved: (bool) true
               })
             }),
             (string) (len=13) "ref_composite": (*tree.NodeReference)({
               n: (*tree.StringNode)({
-                raw: (string) (len=47) "<TODO: self (test_self.literal_2) >-Hello World",
+                raw: (string) (len=15) "TWO-Hello World",
                 templateResolved: (bool) true
               })
             }),
             (string) (len=12) "ref_section1": (*tree.NodeReference)({
-              n: (*tree.StringNode)({
-                raw: (string) (len=43) "<TODO: self (test_self.literal_section_1) >",
-                templateResolved: (bool) true
+              n: (*tree.ObjectNode)({
+                raw: (map[string]tree.NodeRef) (len=2) {
+                  (string) (len=5) "val_1": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC1_ONE",
+                      templateResolved: (bool) true
+                    })
+                  }),
+                  (string) (len=5) "val_2": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC1_TWO",
+                      templateResolved: (bool) true
+                    })
+                  })
+                },
+                sortedKeys: ([]string) (len=2) {
+                  (string) (len=5) "val_1",
+                  (string) (len=5) "val_2"
+                }
               })
             }),
             (string) (len=12) "ref_section2": (*tree.NodeReference)({
-              n: (*tree.StringNode)({
-                raw: (string) (len=43) "<TODO: self (test_self.literal_section_2) >",
-                templateResolved: (bool) true
+              n: (*tree.ObjectNode)({
+                raw: (map[string]tree.NodeRef) (len=2) {
+                  (string) (len=5) "val_1": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC2_ONE",
+                      templateResolved: (bool) true
+                    })
+                  }),
+                  (string) (len=5) "val_2": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC2_TWO",
+                      templateResolved: (bool) true
+                    })
+                  })
+                },
+                sortedKeys: ([]string) (len=2) {
+                  (string) (len=5) "val_1",
+                  (string) (len=5) "val_2"
+                }
               })
             }),
             (string) (len=20) "ref_section_indirect": (*tree.NodeReference)({
-              n: (*tree.StringNode)({
-                raw: (string) (len=80) "<TODO: self (test_self.literal_section_<TODO: self (test_self.use_sections) >) >",
-                templateResolved: (bool) true
+              n: (*tree.ObjectNode)({
+                raw: (map[string]tree.NodeRef) (len=2) {
+                  (string) (len=5) "val_1": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC1_ONE",
+                      templateResolved: (bool) true
+                    })
+                  }),
+                  (string) (len=5) "val_2": (*tree.NodeReference)({
+                    n: (*tree.StringNode)({
+                      raw: (string) (len=8) "SEC1_TWO",
+                      templateResolved: (bool) true
+                    })
+                  })
+                },
+                sortedKeys: ([]string) (len=2) {
+                  (string) (len=5) "val_1",
+                  (string) (len=5) "val_2"
+                }
               })
             }),
             (string) (len=11) "use_section": (*tree.NodeReference)({

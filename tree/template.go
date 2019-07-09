@@ -3,7 +3,6 @@ package tree
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"strings"
 	"text/template"
 )
@@ -60,7 +59,9 @@ func ResolvePath(selectStr string, rctx ResolveContext) (NodeRef, error) {
 	// var node Node = &NumberNode{raw: float64(999)}
 	// var node Node = &ArrayNode{}
 	// ref := &NodeReference{n: node}
-	return rctx.curr.selectNode(selectStr)
+	// return ref, nil
+
+	return rctx.root.selectNode(selectStr)
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
@@ -99,7 +100,6 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 	}
 
 	if len(resolvedComplexNodes) > 1 {
-		fmt.Println(resolvedComplexNodes)
 		return errors.New("a single field can not resolve to multiple complex values")
 	}
 
@@ -108,7 +108,6 @@ func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) erro
 	}
 
 	if len(resolvedComplexNodes) == 1 {
-		fmt.Println("replace string node")
 		node := resolvedComplexNodes[0].node()
 		rctx.curr.swapNode(node)
 		return nil

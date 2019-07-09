@@ -54,7 +54,7 @@ func TestArrayRoot(t *testing.T) {
 	desc, err := DescribeTree(tree)
 	failOnError(t, err, "desc array")
 	t.Log(desc)
-	assert.DeepEqual(t, desc, "root(array):\n  [0](str): MY\n  [1](str): WORD")
+	assert.DeepEqual(t, desc, "root(array):\n  0(str): MY\n  1(str): WORD")
 }
 
 func TestObjectRoot(t *testing.T) {

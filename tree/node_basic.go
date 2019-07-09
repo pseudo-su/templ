@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -26,21 +25,21 @@ func (n *StringNode) valStr() string {
 	return n.raw
 }
 
-func (n *StringNode) updateNode(newVal interface{}) error {
-	switch val := newVal.(type) {
-	case string:
-		n.raw = val
-		return nil
-	case *StringNode:
-		n.raw = val.raw
-		return nil
-	case StringNode:
-		n.raw = val.raw
-		return nil
-	default:
-		return errors.New("unable to set new string value")
-	}
-}
+// func (n *StringNode) updateNode(newVal interface{}) error {
+// 	switch val := newVal.(type) {
+// 	case string:
+// 		n.raw = val
+// 		return nil
+// 	case *StringNode:
+// 		n.raw = val.raw
+// 		return nil
+// 	case StringNode:
+// 		n.raw = val.raw
+// 		return nil
+// 	default:
+// 		return errors.New("unable to set new string value")
+// 	}
+// }
 
 type NumberNode struct {
 	raw float64

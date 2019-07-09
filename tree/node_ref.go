@@ -125,9 +125,23 @@ func (ref *NodeReference) selectNodeByNodePath(path NodePath) (NodeRef, error) {
 	if len(path) == 0 {
 		return ref, nil
 	}
-	// TODO: fail if not container but need to select
-	// TODO: if container selectNodeByNodePath on child
-	return nil, nil
+	node, ok := ref.node().(ContainerNode)
+	if !ok {
+		return nil, errors.New("must be container type")
+	}
+	child, err := node.getChild(path[0])
+	if err != nil {
+		return nil, err
+	}
+	newPath := path[1:]
+	res, err := (*child).selectNodeByNodePath(newPath)
+	if err != nil {
+		return nil, err
+	}
+	if res == nil {
+		return nil, errors.New("unable to get node")
+	}
+	return res, err
 }
 
 func (ref *NodeReference) nodeType() NodeType {

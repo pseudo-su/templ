@@ -17,7 +17,7 @@ test_self:
   ref_section1: ${ self `test_self.literal_section_1` }
   ref_section2: ${ self `test_self.literal_section_2` }
   # Pass multiple strings to `self` and let it join them to determine self reference str
-  ref_section_indirect: ${ self `test_self.literal_section_` (self `test_self.use_sections`) }
+  ref_section_indirect: ${ self `test_self.literal_section_` (self `test_self.use_section`) }
 test_env:
   ref_env: ${ env `ENV` }
   ref_env_composite: ${ env `ENV` }-${ env `STAGE` }
