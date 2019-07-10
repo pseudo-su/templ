@@ -20,9 +20,11 @@ func exitOnError(err error) {
 }
 
 func main() {
-	cwd, err := os.Getwd()
-	exitOnError(err)
+	rootCwd, osErr := os.Getwd()
+	exitOnError(osErr)
 	var filepathFlag string
+	var cwdFlag string
+	var outputDirFlag string
 	var cmdPackage = &cobra.Command{
 		Use:   "package [generate files into .stencil folder]",
 		Short: "Package config files into .stencil/",
@@ -30,8 +32,9 @@ func main() {
 Files will be generated into your .stencil/ folder.`,
 		Args: cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
+			cwd := filepath.Join(rootCwd, cwdFlag)
 			path := filepath.Join(cwd, filepathFlag)
-			fmt.Println("Loading " + path)
+			fmt.Println("Loading: " + path)
 
 			baseConfigBytes, err := FSByte(false, "/base-config.yaml")
 			exitOnError(err)
@@ -43,9 +46,10 @@ Files will be generated into your .stencil/ folder.`,
 			mergedTree, err := templ.MergeTrees(baseTree, configTree)
 			exitOnError(err)
 
+			// TODO: params
 			params := map[string]string{
-				"service": "service-name",
-				"stage":   "test",
+				// "service": "service-name",
+				// "stage":   "test",
 			}
 			resultTree, err := templ.New().Params(params).Tree(path, mergedTree).Execute()
 			exitOnError(err)
@@ -53,8 +57,11 @@ Files will be generated into your .stencil/ folder.`,
 			resultTreeDesc, err := templ.DescribeTree(resultTree)
 			exitOnError(err)
 
-			outputFilepath := filepath.Join(cwd, ".stencil", "output.txt")
+			outputFilepath := filepath.Join(cwd, outputDirFlag, "output.txt")
 
+			fmt.Println("Writing: " + outputFilepath)
+			err = os.MkdirAll(filepath.Dir(outputFilepath), os.ModePerm)
+			exitOnError(err)
 			err = ioutil.WriteFile(outputFilepath, []byte(resultTreeDesc), 0644)
 
 			exitOnError(err)
@@ -62,10 +69,12 @@ Files will be generated into your .stencil/ folder.`,
 	}
 
 	cmdPackage.Flags().StringVarP(&filepathFlag, "file", "f", "config.yaml", "config file to load")
+	cmdPackage.Flags().StringVarP(&outputDirFlag, "outputDir", "o", ".stencil", "package output folder")
+	cmdPackage.Flags().StringVarP(&cwdFlag, "cwd", "d", ".", "folder context to execute command in")
 
 	var rootCmd = &cobra.Command{Use: "stencil"}
 	rootCmd.AddCommand(cmdPackage)
 
-	err = rootCmd.Execute()
-	exitOnError(err)
+	cmdErr := rootCmd.Execute()
+	exitOnError(cmdErr)
 }

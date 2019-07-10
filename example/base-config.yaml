@@ -21,15 +21,15 @@ datadog:
         {{^is_recovery}}
         - To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=${self `info.stageName`}) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}&name=http.request&env=${self `info.stageName`}) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).
 
-        - For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})
+        - For more information about the {{service.name}} check the [repository](https://github.com/pseudo-su/{{service.name}})
         {{/is_recovery}}
 
         {{#is_alert}}
-        ${if eq "prod" (self `info.stageName`) }@pagerduty-CORE_API${end}
+        ${if eq "prod" (self `info.stageName`)}@pagerduty-CORE_API${end}
         {{/is_alert}}
 
         {{#is_alert_recovery}}
-        ${if eq "prod" (self `info.stageName`) }@pagerduty-CORE_API${end}
+        ${if eq "prod" (self `info.stageName`)}@pagerduty-CORE_API${end}
         {{/is_alert_recovery}}
 
         @slack-api-alarm-${self `info.stageName`}

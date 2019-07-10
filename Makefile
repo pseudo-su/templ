@@ -1,7 +1,9 @@
 GO111MODULE=on
 
 .PHONY: default
-default: gen lint test
+default: gen lint test example.build
+
+# TESTING
 
 .PHONY: test
 test:
@@ -11,9 +13,13 @@ test:
 test.snapshot:
 	UPDATE_SNAPSHOTS=true go test ./...
 
+# LINTING
+
 .PHONY: lint
 lint:
 	./bin/golangci-lint run ./...
+
+# CODE GENERATION
 
 .PHONY: gen
 gen: gen.code gen.fixtures
@@ -25,3 +31,9 @@ gen.code:
 .PHONY: gen.fixtures
 gen.fixtures:
 	./test/fixtures/generate-fixtures.sh
+
+# EXAMPLE
+
+.PHONY: example.build
+example.build:
+	go build -o stencil example/*.go

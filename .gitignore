@@ -3,3 +3,7 @@
 /.idea
 .DS_store
 .vscode/launch.json
+
+# CLI code example
+/stencil
+/example/.stencil
