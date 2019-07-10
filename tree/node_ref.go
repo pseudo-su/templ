@@ -8,7 +8,7 @@ type NodeRef interface {
 	swapNode(n Node)
 	nodeType() NodeType
 	node() Node
-	selectNode(selectStr string) (NodeRef, error)
+	SelectNode(selectStr string) (NodeRef, error)
 	selectNodeByNodePath(selectStr NodePath) (NodeRef, error)
 }
 
@@ -109,7 +109,7 @@ func (ref *NodeReference) swapNode(n Node) {
 	ref.n = n
 }
 
-func (ref *NodeReference) selectNode(selectStr string) (NodeRef, error) {
+func (ref *NodeReference) SelectNode(selectStr string) (NodeRef, error) {
 	path, err := NewNodePath(selectStr)
 	if err != nil {
 		return nil, err

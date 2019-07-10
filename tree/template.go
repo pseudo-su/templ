@@ -61,7 +61,7 @@ func ResolvePath(selectStr string, rctx ResolveContext) (NodeRef, error) {
 	// ref := &NodeReference{n: node}
 	// return ref, nil
 
-	return rctx.root.selectNode(selectStr)
+	return rctx.root.SelectNode(selectStr)
 }
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {

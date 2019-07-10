@@ -40,10 +40,10 @@ Files will be generated into your .stencil/ folder.`,
 			exitOnError(err)
 			baseTree, err := templ.ReadYAMLIntoTree(baseConfigBytes)
 			exitOnError(err)
-			configTree, err := templ.ReadFileIntoTree(path)
+			layerConfigTree, err := templ.ReadFileIntoTree(path)
 			exitOnError(err)
 
-			mergedTree, err := templ.MergeTrees(baseTree, configTree)
+			mergedTree, err := templ.MergeTrees(baseTree, layerConfigTree)
 			exitOnError(err)
 
 			// TODO: params
@@ -51,20 +51,56 @@ Files will be generated into your .stencil/ folder.`,
 				// "service": "service-name",
 				// "stage":   "test",
 			}
-			resultTree, err := templ.New().Params(params).Tree(path, mergedTree).Execute()
+			configTree, err := templ.New().Params(params).Tree(path, mergedTree).Execute()
 			exitOnError(err)
 
-			resultTreeDesc, err := templ.DescribeTree(resultTree)
+			// TODO: don't hard-code these
+			monitorNames := []string{"HighLatencyP90", "High4XX", "HighErrors"}
+
+			// Monitors output
+			monitorsDir := filepath.Join(cwd, outputDirFlag, "monitors")
+			err = os.MkdirAll(monitorsDir, os.ModePerm)
 			exitOnError(err)
 
-			outputFilepath := filepath.Join(cwd, outputDirFlag, "output.txt")
+			for _, name := range monitorNames {
+				selector := fmt.Sprintf("datadog.monitor_definitions.%v", name)
+				monitorTree, err := configTree.SelectNode(selector)
+				exitOnError(err)
 
-			fmt.Println("Writing: " + outputFilepath)
-			err = os.MkdirAll(filepath.Dir(outputFilepath), os.ModePerm)
-			exitOnError(err)
-			err = ioutil.WriteFile(outputFilepath, []byte(resultTreeDesc), 0644)
+				resultTreeDesc, err := templ.DescribeTree(monitorTree)
+				exitOnError(err)
 
+				fileName := fmt.Sprintf("%v.txt", name)
+				outputFilepath := filepath.Join(monitorsDir, fileName)
+				fmt.Println("Writing: " + outputFilepath)
+				err = ioutil.WriteFile(outputFilepath, []byte(resultTreeDesc), 0644)
+
+				exitOnError(err)
+			}
+
+			// TODO: don't hard-code these
+			timeboardNames := []string{"ServiceHealth"}
+
+			// Monitors output
+			timeboardsDir := filepath.Join(cwd, outputDirFlag, "timeboards")
+			err = os.MkdirAll(timeboardsDir, os.ModePerm)
 			exitOnError(err)
+
+			for _, name := range timeboardNames {
+				selector := fmt.Sprintf("datadog.timeboard_definitions.%v", name)
+				timeboardTree, err := configTree.SelectNode(selector)
+				exitOnError(err)
+
+				resultTreeDesc, err := templ.DescribeTree(timeboardTree)
+				exitOnError(err)
+
+				fileName := fmt.Sprintf("%v.txt", name)
+				outputFilepath := filepath.Join(timeboardsDir, fileName)
+				fmt.Println("Writing: " + outputFilepath)
+				err = ioutil.WriteFile(outputFilepath, []byte(resultTreeDesc), 0644)
+
+				exitOnError(err)
+			}
 		},
 	}
 
