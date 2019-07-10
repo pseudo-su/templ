@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"errors"
 	"reflect"
 )
 
@@ -54,7 +53,11 @@ func NewNode(v reflect.Value) (NodeRef, error) {
 		node := &StringNode{raw: val, templateResolved: false}
 		ref := &NodeReference{n: node}
 		return ref, nil
+	// case v == nil:
 	default:
-		return nil, errors.New("unable to build tree")
+		node := &NullNode{}
+		ref := &NodeReference{n: node}
+		return ref, nil
+		// return nil, errors.New("unable to build tree")
 	}
 }

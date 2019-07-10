@@ -1,0 +1,7 @@
+root(array):
+  0(str): ARRAY
+  1(str): OF
+  2(str): STRINGS
+  3(str): SOME
+  4(str): MORE
+  5(str): STRINGS

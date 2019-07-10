@@ -1,0 +1,6 @@
+root(object):
+  bool(bool): true
+  bool_override(bool): false
+  string(str): string to keep
+  string_override(str): overwritten string
+  new_string(str): new string

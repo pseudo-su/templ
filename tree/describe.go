@@ -42,13 +42,13 @@ func DescribeTree(rootNode NodeRef) (string, error) {
 		case TNumberNode:
 			node := ctx.curr.node()
 			val := node.(StringableNode).valStr()
-			lines = append(lines, fmt.Sprintf("%v(num): %v", label, val))
+			lines = append(lines, Indent(fmt.Sprintf("%v(num): %v", label, val), indent))
 		case TBoolNode:
 			node := ctx.curr.node()
 			val := node.(StringableNode).valStr()
-			lines = append(lines, fmt.Sprintf("%v(bool): %v", label, val))
+			lines = append(lines, Indent(fmt.Sprintf("%v(bool): %v", label, val), indent))
 		case TNullNode:
-			lines = append(lines, fmt.Sprintf("%v: null", label))
+			lines = append(lines, Indent(fmt.Sprintf("%v: null", label), indent))
 		default:
 			return fmt.Errorf("unable to describe node")
 		}

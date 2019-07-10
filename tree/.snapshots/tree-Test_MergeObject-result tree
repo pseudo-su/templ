@@ -1,0 +1,41 @@
+(*tree.NodeReference)({
+  n: (*tree.ObjectNode)({
+    raw: (map[string]tree.NodeRef) (len=5) {
+      (string) (len=4) "bool": (*tree.NodeReference)({
+        n: (*tree.BoolNode)({
+          raw: (bool) true
+        })
+      }),
+      (string) (len=13) "bool_override": (*tree.NodeReference)({
+        n: (*tree.BoolNode)({
+          raw: (bool) false
+        })
+      }),
+      (string) (len=10) "new_string": (*tree.NodeReference)({
+        n: (*tree.StringNode)({
+          raw: (string) (len=10) "new string",
+          templateResolved: (bool) false
+        })
+      }),
+      (string) (len=6) "string": (*tree.NodeReference)({
+        n: (*tree.StringNode)({
+          raw: (string) (len=14) "string to keep",
+          templateResolved: (bool) false
+        })
+      }),
+      (string) (len=15) "string_override": (*tree.NodeReference)({
+        n: (*tree.StringNode)({
+          raw: (string) (len=18) "overwritten string",
+          templateResolved: (bool) false
+        })
+      })
+    },
+    sortedKeys: ([]string) (len=5) {
+      (string) (len=4) "bool",
+      (string) (len=13) "bool_override",
+      (string) (len=6) "string",
+      (string) (len=15) "string_override",
+      (string) (len=10) "new_string"
+    }
+  })
+})

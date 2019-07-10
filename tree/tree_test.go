@@ -3,6 +3,7 @@ package tree
 import (
 	"testing"
 
+	"github.com/bradleyjkemp/cupaloy"
 	"gotest.tools/assert"
 )
 
@@ -18,7 +19,16 @@ func TestFloatRoot(t *testing.T) {
 	desc, err := DescribeTree(tree)
 	failOnError(t, err, "desc float")
 	t.Log(desc)
-	assert.DeepEqual(t, desc, "(num): 2.11")
+	assert.DeepEqual(t, desc, "root(num): 2.11")
+}
+
+func TestNullRoot(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`null`), YAML)
+	failOnError(t, err, "parse null")
+	desc, err := DescribeTree(tree)
+	failOnError(t, err, "desc float")
+	t.Log(desc)
+	assert.DeepEqual(t, desc, "root: null")
 }
 
 func TestIntegerRoot(t *testing.T) {
@@ -27,7 +37,7 @@ func TestIntegerRoot(t *testing.T) {
 	desc, err := DescribeTree(tree)
 	failOnError(t, err, "desc int")
 	t.Log(desc)
-	assert.DeepEqual(t, desc, "(num): 2")
+	assert.DeepEqual(t, desc, "root(num): 2")
 }
 
 func TestStringRoot(t *testing.T) {
@@ -45,7 +55,7 @@ func TestBoolRoot(t *testing.T) {
 	desc, err := DescribeTree(tree)
 	failOnError(t, err, "desc bool")
 	t.Log(desc)
-	assert.DeepEqual(t, desc, "(bool): false")
+	assert.DeepEqual(t, desc, "root(bool): false")
 }
 
 func TestArrayRoot(t *testing.T) {
@@ -64,6 +74,27 @@ func TestObjectRoot(t *testing.T) {
 	failOnError(t, err, "desc obj")
 	t.Log(desc)
 	assert.DeepEqual(t, desc, "root(object):\n  key(str): val")
+}
+
+func TestComplexTree(t *testing.T) {
+	tree, err := ReadIntoTree([]byte(`
+int: 1
+float: 1.1
+string: string
+bool: true
+empty: null
+array:
+  - array
+  - of
+  - strings
+object:
+  a: a
+`), YAML)
+	failOnError(t, err, "load tree")
+
+	treeDesc, err := DescribeTree(tree)
+	failOnError(t, err, "DescribeTree (yaml)")
+	cupaloy.SnapshotT(t, treeDesc)
 }
 
 func TestTreesMatch(t *testing.T) {

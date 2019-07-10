@@ -1,0 +1,12 @@
+root(object):
+  array(array):
+    0(str): array
+    1(str): of
+    2(str): strings
+  bool(bool): true
+  empty: null
+  float(num): 1.1
+  int(num): 1
+  object(object):
+    a(str): a
+  string(str): string
