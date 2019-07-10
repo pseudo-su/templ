@@ -82,7 +82,7 @@ NOTE: if this repo is cloned into you `GOPATH` you will need to prefix all comma
 
 * test: `go test ./...`
 * lint: `./bin/golangci-lint run ./...`
-* codegen: `go generate ./...` [link](https://github.com/go-swagger/go-swagger/issues/1724=issuecomment-469335593)
+* codegen: `go generate ./...` link:https://github.com/go-swagger/go-swagger/issues/1724#issuecomment-469335593[code gen with versioned tool dependencies]
 
 === Project ideas & potential features
 
