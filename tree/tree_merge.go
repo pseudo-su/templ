@@ -63,6 +63,10 @@ func mergeArrayNodes(t1, t2 NodeRef) (NodeRef, error) {
 	return t1, nil
 }
 
+func MergeTrees(t1, t2 NodeRef) (NodeRef, error) {
+	return mergeNodes(t1, t2)
+}
+
 func mergeNodes(baseTree, overlayTree NodeRef) (NodeRef, error) {
 	t1Type := baseTree.nodeType()
 	t2Type := overlayTree.nodeType()

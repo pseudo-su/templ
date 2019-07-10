@@ -110,3 +110,17 @@ func ReadFileIntoTree(filename string) (tree.NodeRef, error) {
 
 	return t, nil
 }
+
+// TODO: these are temporarily re-exported
+
+func ReadYAMLIntoTree(bytes []byte) (tree.NodeRef, error) {
+	return tree.ReadIntoTree(bytes, tree.YAML)
+}
+
+func MergeTrees(t1, t2 tree.NodeRef) (tree.NodeRef, error) {
+	return tree.MergeTrees(t1, t2)
+}
+
+func DescribeTree(rootNode tree.NodeRef) (string, error) {
+	return tree.DescribeTree(rootNode)
+}

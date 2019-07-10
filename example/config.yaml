@@ -1,0 +1,11 @@
+info:
+  # serviceName: ${param `service`}
+  # stageName: ${param `stage`}
+  serviceName: service-name
+  stageName: prod
+datadog:
+  timeboards:
+    - ServiceHealth
+  monitors:
+    - HighLatencyP90
+    - High4XX
