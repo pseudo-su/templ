@@ -213,7 +213,7 @@ var _escData = map[string]*_escFile{
 		name:    "base-datadog.config.yaml",
 		local:   "base-datadog.config.yaml",
 		size:    9610,
-		modtime: 1562849448,
+		modtime: 1562852286,
 		compressed: `
 H4sIAAAAAAAC/+xaYW/bOBL9nl8xSOJNAqSy4ri4jXDZRbHdQxfY6wVpigsQ9BSaGktEKVIhKTuu6/9+
 ICXLsiwn7qW5Xq/ul9pDct7M4yNnIjkihkQyDnYADEtxIImKdAA3H3YAUimYkar4WvseCmnYcGLXAGQk

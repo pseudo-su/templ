@@ -54,6 +54,18 @@ Files will be generated into your .stencil/ folder.`,
 			configTree, err := templ.New().Params(params).Tree(path, mergedTree).Execute()
 			exitOnError(err)
 
+			configJSON, err := configTree.MarshalJSONIndent("", "  ")
+			exitOnError(err)
+
+			outputDir := filepath.Join(cwd, outputDirFlag)
+			err = os.MkdirAll(outputDir, os.ModePerm)
+			exitOnError(err)
+
+			configOutputFilepath := filepath.Join(outputDir, "output.json")
+			fmt.Println("Writing: " + configOutputFilepath)
+			err = ioutil.WriteFile(configOutputFilepath, configJSON, 0644)
+			exitOnError(err)
+
 			// TODO: don't hard-code these
 			monitorNames := []string{"HighLatencyP90", "High4XX", "HighErrors"}
 
@@ -74,7 +86,6 @@ Files will be generated into your .stencil/ folder.`,
 				outputFilepath := filepath.Join(monitorsDir, fileName)
 				fmt.Println("Writing: " + outputFilepath)
 				err = ioutil.WriteFile(outputFilepath, monitorJSON, 0644)
-
 				exitOnError(err)
 			}
 
