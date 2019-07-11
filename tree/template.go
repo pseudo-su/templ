@@ -18,6 +18,7 @@ type ResolveContext struct {
 // func ResolveInTemplate
 
 func CreateSelfFn(
+	rootTemplate template.Template,
 	rctx ResolveContext,
 	resolvedStringableNodes *[]NodeRef,
 	resolvedComplexNodes *[]NodeRef,
@@ -29,7 +30,25 @@ func CreateSelfFn(
 			return "", errors.New("unable to resolve node at path")
 		}
 		switch nodeRef.nodeType() {
-		case TStringNode, TNumberNode, TBoolNode, TNullNode:
+		case TStringNode:
+			// TODO: create rctx properly here
+			// prevPaths := [][]ChildKey{}
+			// prevPaths = append(prevPaths, rctx.prevPaths...)
+			childRctx := ResolveContext{
+				prevPaths: [][]ChildKey{},
+				path:      []ChildKey{},
+				curr:      nodeRef,
+				root:      rctx.root,
+				parent:    nil,
+			}
+			err = ResolveStringNode(rootTemplate, childRctx)
+			if err != nil {
+				return "", err
+			}
+			*resolvedStringableNodes = append(*resolvedStringableNodes, nodeRef)
+			node := nodeRef.node().(StringableNode)
+			return node.valStr(), nil
+		case TNumberNode, TBoolNode, TNullNode:
 			*resolvedStringableNodes = append(*resolvedStringableNodes, nodeRef)
 			node := nodeRef.node().(StringableNode)
 			return node.valStr(), nil
@@ -66,12 +85,16 @@ func ResolvePath(selectStr string, rctx ResolveContext) (NodeRef, error) {
 
 func ResolveStringNode(rootTemplate template.Template, rctx ResolveContext) error {
 	node := rctx.curr.node()
-	val := node.(*StringNode).raw
+	stringNode := node.(*StringNode)
+	if stringNode.templateResolved {
+		return nil
+	}
+	val := stringNode.raw
 	// resolvedNodes := map[string]interface{}{}
 	resolvedStringableNodes := []NodeRef{}
 	resolvedComplexNodes := []NodeRef{}
 	tmpl, err := rootTemplate.Funcs(template.FuncMap{
-		"self": CreateSelfFn(rctx, &resolvedStringableNodes, &resolvedComplexNodes),
+		"self": CreateSelfFn(rootTemplate, rctx, &resolvedStringableNodes, &resolvedComplexNodes),
 		"load": CreateFileLoadFn(rctx, &resolvedStringableNodes, &resolvedComplexNodes),
 	}).Parse(val)
 	if err != nil {

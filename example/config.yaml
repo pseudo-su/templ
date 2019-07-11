@@ -1,9 +1,14 @@
 info:
-  # serviceName: ${param `service`}
-  # stageName: ${param `stage`}
-  serviceName: service-name
-  stageName: prod
+  serviceName: ${param `service`}
+  stageName: ${param `stage`}
 datadog:
+  # TODO: use monitor_notify settings
+  monitors_notify:
+    pagerduty:
+      handle: "@pagerduty-CORE_API"
+    slack:
+      handle: "@slack-api-alarm-${self `info.stageName`}"
+
   timeboards:
     - ServiceHealth
   monitors:

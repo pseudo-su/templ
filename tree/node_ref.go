@@ -10,6 +10,8 @@ type NodeRef interface {
 	node() Node
 	SelectNode(selectStr string) (NodeRef, error)
 	selectNodeByNodePath(selectStr NodePath) (NodeRef, error)
+	MarshalJSON() ([]byte, error)
+	MarshalJSONIndent(prefix, indent string) ([]byte, error)
 }
 
 type NodePath []ChildKey

@@ -11,6 +11,7 @@ import (
 type ContainerNode interface {
 	forEach(func(childNode NodeRef, idx int, desc ChildKey) error) error
 	getChild(ChildKey) (*NodeRef, error)
+	count() int
 }
 
 type ChildKey string
@@ -46,6 +47,10 @@ type ObjectNode struct {
 
 func (n *ObjectNode) nodeType() NodeType {
 	return TObjectNode
+}
+
+func (n *ObjectNode) count() int {
+	return len(n.sortedKeys)
 }
 
 func (n *ObjectNode) getChild(childKey ChildKey) (*NodeRef, error) {
@@ -122,6 +127,10 @@ type ArrayNode struct {
 
 func (n *ArrayNode) nodeType() NodeType {
 	return TArrayNode
+}
+
+func (n *ArrayNode) count() int {
+	return len(n.raw)
 }
 
 func (n *ArrayNode) isContainer() bool {

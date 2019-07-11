@@ -1,0 +1,235 @@
+datadog:
+  timeboards: []
+  monitors: []
+
+  monitors_notify:
+    pagerduty:
+      handle: ""
+      isAlert: false
+      isNoData: false
+      isWarning: false
+      isRecovery: false
+      isWarningRecovery: false
+      isAlertRecovery: false
+      isAlertToWarning: false
+      isNoDataRecovery: false
+    slack:
+      handle: ""
+      isAlert: false
+      isNoData: false
+      isWarning: false
+      isRecovery: false
+      isWarningRecovery: false
+      isAlertRecovery: false
+      isAlertToWarning: false
+      isNoDataRecovery: false
+
+  # Standard monitor definitions
+  monitor_definitions:
+    HighLatencyP90:
+      name: Service ${self `info.serviceName`} has a high p90 latency on env:${self `info.stageName`}
+      type: metric alert
+      query: avg(last_10m):avg:trace.http.request.duration.by.service.90p{service:${self `info.serviceName`},env:${self `info.stageName`}} > ${self `datadog.monitor_definitions.HighLatencyP90.options.thresholds.warning`}
+      message: |
+        ##`{{service.name}}` 90th percentile latency is too high.
+
+        {{^is_recovery}}
+        - To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=${self `info.stageName`}) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}&name=http.request&env=${self `info.stageName`}) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).
+
+        - For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})
+        {{/is_recovery}}
+
+        {{#is_alert}}
+        ${if eq "prod" (self `info.stageName`)}${self `datadog.monitors_notify.pagerduty.handle`}${end}
+        {{/is_alert}}
+
+        {{#is_alert_recovery}}
+        ${if eq "prod" (self `info.stageName`)}${self `datadog.monitors_notify.pagerduty.handle`}${end}
+        {{/is_alert_recovery}}
+
+        ${self `datadog.monitors_notify.slack.handle`}
+      tags:
+        - env:${self `info.stageName`}
+        - service:${self `info.serviceName`}
+      options:
+        notify_audit: false
+        locked: false
+        timeout_h: 0
+        silenced: {}
+        include_tags: true
+        no_data_timeframe: null
+        require_full_window: false
+        new_host_delay: 300
+        notify_no_data: false
+        renotify_interval: 0
+        escalation_message: ''
+        thresholds:
+          warning: 0.8
+          critical: 1
+
+    High4XX:
+      name: Service ${self `info.serviceName`} has a high 4xx rate on env:${self `info.stageName`}
+      type: query alert
+      query: avg(last_10m):sum:trace.http.request.hits.by_http_status{http.status_class:400,http.status_code:401,http.status_code:403,env:${self `info.stageName`},service:${self `info.serviceName`}}.as_count() / sum:trace.http.request.hits{env:${self `info.stageName`},service:${self `info.serviceName`}}.as_count() > ${self `datadog.monitor_definitions.High4XX.options.thresholds.warning`}
+      message: |
+        ##`{{service.name}}` 4xx rate is too high.
+
+        {{^is_recovery}}
+        - To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=${self `info.stageName`}) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}&name=http.request&env=${self `info.stageName`}) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).
+
+        - For more information about the {{service.name}} check the [repository](https://github.com/pseudo-su/{{service.name}})
+        {{/is_recovery}}
+
+        {{#is_alert}}
+        ${if eq "prod" (self `info.stageName`)}${self `datadog.monitors_notify.pagerduty.handle`}${end}
+        {{/is_alert}}
+
+        {{#is_alert_recovery}}
+        ${if eq "prod" (self `info.stageName`)}${self `datadog.monitors_notify.pagerduty.handle`}${end}
+        {{/is_alert_recovery}}
+
+        ${self `datadog.monitors_notify.slack.handle`}
+      tags:
+        - env:${self `info.stageName`}
+        - service:${self `info.serviceName`}
+      options:
+        notify_audit: false
+        locked: false
+        timeout_h: 0
+        silenced: {}
+        include_tags: true
+        no_data_timeframe: null
+        require_full_window: false
+        new_host_delay: 300
+        notify_no_data: false
+        renotify_interval: 0
+        escalation_message: ''
+        thresholds:
+          warning: 0.2
+          critical: 0.3
+
+    HighErrors:
+      name: Service ${self `info.serviceName`} has a high error rate on env:${self `info.stageName`}
+      type: query alert
+      query: avg(last_10m):( sum:trace.http.request.errors{service:${self `info.serviceName`},env:${self `info.stageName`}} / sum:trace.http.request.hits{service:${self `info.serviceName`},env:${self `info.stageName`}} ) > ${self `datadog.monitor_definitions.HighErrors.options.thresholds.warning`}
+      message: |
+        ##`{{service.name}}` error rate is too high.
+
+        {{^is_recovery}}
+        - To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=${self `info.stageName`}) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}&name=http.request&env=${self `info.stageName`}) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).
+
+        - For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})
+        {{/is_recovery}}
+
+        {{#is_alert}}
+        ${if eq "prod" (self `info.stageName`)}${self `datadog.monitors_notify.pagerduty.handle`}${end}
+        {{/is_alert}}
+
+        {{#is_alert_recovery}}
+        ${if eq "prod" (self `info.stageName`)}${self `datadog.monitors_notify.pagerduty.handle`}${end}
+        {{/is_alert_recovery}}
+
+        ${self `datadog.monitors_notify.slack.handle`}
+      tags:
+        - env:${self `info.stageName`}
+        - service:${self `info.serviceName`}
+      options:
+        notify_audit: false
+        locked: false
+        timeout_h: 0
+        silenced: {}
+        include_tags: true
+        no_data_timeframe: null
+        require_full_window: false
+        new_host_delay: 300
+        notify_no_data: false
+        renotify_interval: 0
+        escalation_message: ''
+        thresholds:
+          warning: 0.01
+          critical: 0.05
+
+  # Standard timeboard definitions
+  timeboard_definitions:
+    ServiceHealth:
+      title: Service ${self `info.serviceName`} API Health
+      description: ''
+      template_variables:
+        - default: prod
+          prefix: env
+          name: environment
+        - default: '${self `info.serviceName`}'
+          prefix: service
+          name: service
+      layout_type: ordered
+      graphs:
+        - title: Apdex
+          definition:
+            autoscale: false
+            precision: 2
+            viz: query_value
+            requests:
+              - q: avg:trace.http.request.apdex.by.service{$service,$environment}
+                aggregator: avg
+                conditional_formats:
+                  - palette: white_on_red
+                    value: 80
+                    comparator: '>'
+                  - palette: white_on_yellow
+                    value: 95
+                    comparator: '>='
+                  - palette: white_on_green
+                    value: 95
+                    comparator: '<'
+        - title: CPU Utilization
+          definition:
+            viz: timeseries
+            requests:
+              - q: avg:aws.ecs.service.cpuutilization{$service,$environment}
+                style:
+                  palette: dog_classic
+                  width: normal
+                  type: solid
+                type: line
+        - title: Memory Utilization
+          definition:
+            viz: timeseries
+            requests:
+              - q: avg:aws.ecs.memory_utilization{$service,$environment}
+                style:
+                  palette: dog_classic
+                  width: normal
+                  type: solid
+                type: line
+        - title: Incoming HTTP Requests
+          definition:
+            viz: timeseries
+            requests:
+              - q: avg:trace.http.request.hits{$service,$environment}.as_count()
+                style:
+                  palette: dog_classic
+                  width: normal
+                  type: solid
+                type: bars
+        - title: HTTP Errors
+          definition:
+            viz: timeseries
+            requests:
+              - q: |
+                  avg:aws.applicationelb.httpcode_target_5xx{$service,$environment}.as_count(),
+                  avg:aws.applicationelb.httpcode_elb_4xx{$service,$environment}.as_count()
+                style:
+                  palette: dog_classic
+                  width: normal
+                  type: solid
+                type: bars
+        - title: HTTP Request Latency
+          definition:
+            viz: timeseries
+            requests:
+              - q: avg:trace.http.request.duration{$service,$environment}
+                style:
+                  palette: dog_classic
+                  width: normal
+                  type: solid
+                type: line

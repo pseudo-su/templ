@@ -1,4 +1,4 @@
-//go:generate gobin -m -run github.com/mjibson/esc -o base_config.go -pkg main base-config.yaml
+//go:generate gobin -m -run github.com/mjibson/esc -o base_config.go -pkg main base-datadog.config.yaml
 package main
 
 import (
@@ -36,7 +36,7 @@ Files will be generated into your .stencil/ folder.`,
 			path := filepath.Join(cwd, filepathFlag)
 			fmt.Println("Loading: " + path)
 
-			baseConfigBytes, err := FSByte(false, "/base-config.yaml")
+			baseConfigBytes, err := FSByte(false, "/base-datadog.config.yaml")
 			exitOnError(err)
 			baseTree, err := templ.ReadYAMLIntoTree(baseConfigBytes)
 			exitOnError(err)
@@ -48,8 +48,8 @@ Files will be generated into your .stencil/ folder.`,
 
 			// TODO: params
 			params := map[string]string{
-				// "service": "service-name",
-				// "stage":   "test",
+				"service": "my-service-name",
+				"stage":   "prod",
 			}
 			configTree, err := templ.New().Params(params).Tree(path, mergedTree).Execute()
 			exitOnError(err)
@@ -64,16 +64,16 @@ Files will be generated into your .stencil/ folder.`,
 
 			for _, name := range monitorNames {
 				selector := fmt.Sprintf("datadog.monitor_definitions.%v", name)
-				monitorTree, err := configTree.SelectNode(selector)
-				exitOnError(err)
+				monitorTree, merr := configTree.SelectNode(selector)
+				exitOnError(merr)
 
-				resultTreeDesc, err := templ.DescribeTree(monitorTree)
-				exitOnError(err)
+				monitorJSON, merr := monitorTree.MarshalJSONIndent("", "  ")
+				exitOnError(merr)
 
-				fileName := fmt.Sprintf("%v.txt", name)
+				fileName := fmt.Sprintf("%v.json", name)
 				outputFilepath := filepath.Join(monitorsDir, fileName)
 				fmt.Println("Writing: " + outputFilepath)
-				err = ioutil.WriteFile(outputFilepath, []byte(resultTreeDesc), 0644)
+				err = ioutil.WriteFile(outputFilepath, monitorJSON, 0644)
 
 				exitOnError(err)
 			}
@@ -91,13 +91,13 @@ Files will be generated into your .stencil/ folder.`,
 				timeboardTree, err := configTree.SelectNode(selector)
 				exitOnError(err)
 
-				resultTreeDesc, err := templ.DescribeTree(timeboardTree)
+				timeboardJSON, err := timeboardTree.MarshalJSONIndent("", "  ")
 				exitOnError(err)
 
-				fileName := fmt.Sprintf("%v.txt", name)
+				fileName := fmt.Sprintf("%v.json", name)
 				outputFilepath := filepath.Join(timeboardsDir, fileName)
 				fmt.Println("Writing: " + outputFilepath)
-				err = ioutil.WriteFile(outputFilepath, []byte(resultTreeDesc), 0644)
+				err = ioutil.WriteFile(outputFilepath, timeboardJSON, 0644)
 
 				exitOnError(err)
 			}

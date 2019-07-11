@@ -13,18 +13,18 @@ type WalkingContext struct {
 
 type NodeWalkFn func(WalkingContext) error
 
-func WalkTree(node NodeRef, actionFn NodeWalkFn) error {
+func WalkTree(node NodeRef, preFn NodeWalkFn) error {
 	ctx := WalkingContext{
 		curr:   node,
 		root:   node,
 		parent: nil,
 	}
-	return WalkTreeCtx(ctx, actionFn)
+	return WalkTreeCtx(ctx, preFn)
 }
 
-func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
+func WalkTreeCtx(ctx WalkingContext, preFn NodeWalkFn) error {
 	// Invoke action on current node
-	err := actionFn(ctx)
+	err := preFn(ctx)
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func WalkTreeCtx(ctx WalkingContext, actionFn NodeWalkFn) error {
 				curr:   childNode,
 				parent: &ctx.curr,
 			}
-			return WalkTreeCtx(childContext, actionFn)
+			return WalkTreeCtx(childContext, preFn)
 		})
 	case TStringNode, TNumberNode, TBoolNode, TNullNode:
 		return nil
