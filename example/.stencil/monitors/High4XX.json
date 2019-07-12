@@ -13,12 +13,12 @@
     "require_full_window": false,
     "silenced": {},
     "thresholds": {
-      "critical": 0.3,
-      "warning": 0.2
+      "critical": 0.1,
+      "warning": 0.05
     },
     "timeout_h": 0
   },
-  "query": "avg(last_10m):sum:trace.http.request.hits.by_http_status{http.status_class:400,http.status_code:401,http.status_code:403,env:prod,service:my-service-name}.as_count() / sum:trace.http.request.hits{env:prod,service:my-service-name}.as_count() \u003e 0.2",
+  "query": "avg(last_10m):sum:trace.http.request.hits.by_http_status{http.status_class:400,http.status_code:401,http.status_code:403,env:prod,service:my-service-name}.as_count() / sum:trace.http.request.hits{env:prod,service:my-service-name}.as_count() \u003e 0.05",
   "tags": [
     "env:prod",
     "service:my-service-name"

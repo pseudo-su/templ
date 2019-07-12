@@ -213,7 +213,7 @@ var _escData = map[string]*_escFile{
 		name:    "stencil-plugin-datadog.base.yaml",
 		local:   "stencil-plugin-datadog.base.yaml",
 		size:    9627,
-		modtime: 1562853474,
+		modtime: 1562855558,
 		compressed: `
 H4sIAAAAAAAC/+xaf2/bOBL9P59ikMSbBMjKiuPiNsJlF8W2hxbo9YI0xQUIegpNjSWiFKmQlB3X9Xc/
 kJJlWZYT99Ki163zT+whOT8eHznPliNiSCTjYAfAsBQHkqhIB3DzYQcglYIZqYq3tfehkIYNJ3YNQEZi

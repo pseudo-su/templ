@@ -24,3 +24,10 @@ datadog:
   monitors:
     - HighLatencyP90
     - High4XX
+
+  monitor_definitions:
+    High4XX:
+      options:
+        thresholds:
+          warning: 0.05
+          critical: 0.1
