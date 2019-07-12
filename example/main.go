@@ -1,4 +1,4 @@
-//go:generate gobin -m -run github.com/mjibson/esc -o base_config.go -pkg main base-datadog.config.yaml
+//go:generate gobin -m -run github.com/mjibson/esc -o datadog_assets.go -pkg main stencil-plugin-datadog.base.yaml
 package main
 
 import (
@@ -36,7 +36,7 @@ Files will be generated into your .stencil/ folder.`,
 			path := filepath.Join(cwd, filepathFlag)
 			fmt.Println("Loading: " + path)
 
-			baseConfigBytes, err := FSByte(false, "/base-datadog.config.yaml")
+			baseConfigBytes, err := FSByte(false, "/stencil-plugin-datadog.base.yaml")
 			exitOnError(err)
 			baseTree, err := templ.ReadYAMLIntoTree(baseConfigBytes)
 			exitOnError(err)

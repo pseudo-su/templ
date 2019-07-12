@@ -1,6 +1,14 @@
+# TODO: fail when using an unsupported stencil version
+stencilVersion: 1.0.0
 info:
   serviceName: ${param `service`}
   stageName: ${param `stage`}
+
+# TODO: use plugins array enable/disable features
+plugins:
+  - apigee-blue-green
+  - datadog
+
 datadog:
   # TODO: use monitor_notify settings
   monitors_notify:

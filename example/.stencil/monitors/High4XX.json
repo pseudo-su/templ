@@ -1,0 +1,27 @@
+{
+  "message": "##`{{service.name}}` 4xx rate is too high.\n\n{{^is_recovery}}\n- To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=prod) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}\u0026name=http.request\u0026env=prod) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).\n\n- For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})\n{{/is_recovery}}\n\n{{#is_alert}}\n@pagerduty-CORE_API\n{{/is_alert}}\n\n{{#is_alert_recovery}}\n@pagerduty-CORE_API\n{{/is_alert_recovery}}\n\n@slack-api-alarm-prod\n",
+  "name": "Service my-service-name has a high 4xx rate on env:prod",
+  "options": {
+    "escalation_message": "",
+    "include_tags": true,
+    "locked": false,
+    "new_host_delay": 300,
+    "no_data_timeframe": null,
+    "notify_audit": false,
+    "notify_no_data": false,
+    "renotify_interval": 0,
+    "require_full_window": false,
+    "silenced": {},
+    "thresholds": {
+      "critical": 0.3,
+      "warning": 0.2
+    },
+    "timeout_h": 0
+  },
+  "query": "avg(last_10m):sum:trace.http.request.hits.by_http_status{http.status_class:400,http.status_code:401,http.status_code:403,env:prod,service:my-service-name}.as_count() / sum:trace.http.request.hits{env:prod,service:my-service-name}.as_count() \u003e 0.2",
+  "tags": [
+    "env:prod",
+    "service:my-service-name"
+  ],
+  "type": "query alert"
+}

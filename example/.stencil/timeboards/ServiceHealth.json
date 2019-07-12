@@ -1,0 +1,135 @@
+{
+  "description": "",
+  "graphs": [
+    {
+      "definition": {
+        "autoscale": false,
+        "precision": 2,
+        "requests": [
+          {
+            "aggregator": "avg",
+            "conditional_formats": [
+              {
+                "comparator": "\u003e",
+                "palette": "white_on_red",
+                "value": 80
+              },
+              {
+                "comparator": "\u003e=",
+                "palette": "white_on_yellow",
+                "value": 95
+              },
+              {
+                "comparator": "\u003c",
+                "palette": "white_on_green",
+                "value": 95
+              }
+            ],
+            "q": "avg:trace.http.request.apdex.by.service{$service,$environment}"
+          }
+        ],
+        "viz": "query_value"
+      },
+      "title": "Apdex"
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "q": "avg:aws.ecs.service.cpuutilization{$service,$environment}",
+            "style": {
+              "palette": "dog_classic",
+              "type": "solid",
+              "width": "normal"
+            },
+            "type": "line"
+          }
+        ],
+        "viz": "timeseries"
+      },
+      "title": "CPU Utilization"
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "q": "avg:aws.ecs.memory_utilization{$service,$environment}",
+            "style": {
+              "palette": "dog_classic",
+              "type": "solid",
+              "width": "normal"
+            },
+            "type": "line"
+          }
+        ],
+        "viz": "timeseries"
+      },
+      "title": "Memory Utilization"
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "q": "avg:trace.http.request.hits{$service,$environment}.as_count()",
+            "style": {
+              "palette": "dog_classic",
+              "type": "solid",
+              "width": "normal"
+            },
+            "type": "bars"
+          }
+        ],
+        "viz": "timeseries"
+      },
+      "title": "Incoming HTTP Requests"
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "q": "avg:aws.applicationelb.httpcode_target_5xx{$service,$environment}.as_count(),\navg:aws.applicationelb.httpcode_elb_4xx{$service,$environment}.as_count()\n",
+            "style": {
+              "palette": "dog_classic",
+              "type": "solid",
+              "width": "normal"
+            },
+            "type": "bars"
+          }
+        ],
+        "viz": "timeseries"
+      },
+      "title": "HTTP Errors"
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "q": "avg:trace.http.request.duration{$service,$environment}",
+            "style": {
+              "palette": "dog_classic",
+              "type": "solid",
+              "width": "normal"
+            },
+            "type": "line"
+          }
+        ],
+        "viz": "timeseries"
+      },
+      "title": "HTTP Request Latency"
+    }
+  ],
+  "layout_type": "ordered",
+  "template_variables": [
+    {
+      "default": "prod",
+      "name": "environment",
+      "prefix": "env"
+    },
+    {
+      "default": "my-service-name",
+      "name": "service",
+      "prefix": "service"
+    }
+  ],
+  "title": "Service my-service-name API Health"
+}

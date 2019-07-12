@@ -1,0 +1,264 @@
+{
+  "datadog": {
+    "monitor_definitions": {
+      "High4XX": {
+        "message": "##`{{service.name}}` 4xx rate is too high.\n\n{{^is_recovery}}\n- To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=prod) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}\u0026name=http.request\u0026env=prod) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).\n\n- For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})\n{{/is_recovery}}\n\n{{#is_alert}}\n@pagerduty-CORE_API\n{{/is_alert}}\n\n{{#is_alert_recovery}}\n@pagerduty-CORE_API\n{{/is_alert_recovery}}\n\n@slack-api-alarm-prod\n",
+        "name": "Service my-service-name has a high 4xx rate on env:prod",
+        "options": {
+          "escalation_message": "",
+          "include_tags": true,
+          "locked": false,
+          "new_host_delay": 300,
+          "no_data_timeframe": null,
+          "notify_audit": false,
+          "notify_no_data": false,
+          "renotify_interval": 0,
+          "require_full_window": false,
+          "silenced": {},
+          "thresholds": {
+            "critical": 0.3,
+            "warning": 0.2
+          },
+          "timeout_h": 0
+        },
+        "query": "avg(last_10m):sum:trace.http.request.hits.by_http_status{http.status_class:400,http.status_code:401,http.status_code:403,env:prod,service:my-service-name}.as_count() / sum:trace.http.request.hits{env:prod,service:my-service-name}.as_count() \u003e 0.2",
+        "tags": [
+          "env:prod",
+          "service:my-service-name"
+        ],
+        "type": "query alert"
+      },
+      "HighErrors": {
+        "message": "##`{{service.name}}` error rate is too high.\n\n{{^is_recovery}}\n- To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=prod) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}\u0026name=http.request\u0026env=prod) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).\n\n- For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})\n{{/is_recovery}}\n\n{{#is_alert}}\n@pagerduty-CORE_API\n{{/is_alert}}\n\n{{#is_alert_recovery}}\n@pagerduty-CORE_API\n{{/is_alert_recovery}}\n\n@slack-api-alarm-prod\n",
+        "name": "Service my-service-name has a high error rate on env:prod",
+        "options": {
+          "escalation_message": "",
+          "include_tags": true,
+          "locked": false,
+          "new_host_delay": 300,
+          "no_data_timeframe": null,
+          "notify_audit": false,
+          "notify_no_data": false,
+          "renotify_interval": 0,
+          "require_full_window": false,
+          "silenced": {},
+          "thresholds": {
+            "critical": 0.05,
+            "warning": 0.01
+          },
+          "timeout_h": 0
+        },
+        "query": "avg(last_10m):( sum:trace.http.request.errors{service:my-service-name,env:prod} / sum:trace.http.request.hits{service:my-service-name,env:prod} ) \u003e 0.01",
+        "tags": [
+          "env:prod",
+          "service:my-service-name"
+        ],
+        "type": "query alert"
+      },
+      "HighLatencyP90": {
+        "message": "##`{{service.name}}` 90th percentile latency is too high.\n\n{{^is_recovery}}\n- To troubleshoot, check the `{{service.name}}` [service page](https://app.datadoghq.com/apm/service/{{service.name}}/http.request?env=prod) or [recent traces](https://app.datadoghq.com/apm/traces?service={{service.name}}\u0026name=http.request\u0026env=prod) or [logs](https://service.au.sumologic.com/ui/index.html#section/search/%40%40_index%3Dlfscnpcom_cloudwatch%7Cwhere%20service_name%3D%22{{service.name}}%22%7Cwhere%20msg_log_level%3D%22ERROR%22).\n\n- For more information about the {{service.name}} check the [repository](https://github.latitudefinancial.com/Latitude/{{service.name}})\n{{/is_recovery}}\n\n{{#is_alert}}\n@pagerduty-CORE_API\n{{/is_alert}}\n\n{{#is_alert_recovery}}\n@pagerduty-CORE_API\n{{/is_alert_recovery}}\n\n@slack-api-alarm-prod\n",
+        "name": "Service my-service-name has a high p90 latency on env:prod",
+        "options": {
+          "escalation_message": "",
+          "include_tags": true,
+          "locked": false,
+          "new_host_delay": 300,
+          "no_data_timeframe": null,
+          "notify_audit": false,
+          "notify_no_data": false,
+          "renotify_interval": 0,
+          "require_full_window": false,
+          "silenced": {},
+          "thresholds": {
+            "critical": 1,
+            "warning": 0.8
+          },
+          "timeout_h": 0
+        },
+        "query": "avg(last_10m):avg:trace.http.request.duration.by.service.90p{service:my-service-name,env:prod} \u003e 0.8",
+        "tags": [
+          "env:prod",
+          "service:my-service-name"
+        ],
+        "type": "metric alert"
+      }
+    },
+    "monitors": [
+      "HighLatencyP90",
+      "High4XX"
+    ],
+    "monitors_notify": {
+      "pagerduty": {
+        "handle": "@pagerduty-CORE_API",
+        "isAlert": false,
+        "isAlertRecovery": false,
+        "isAlertToWarning": false,
+        "isNoData": false,
+        "isNoDataRecovery": false,
+        "isRecovery": false,
+        "isWarning": false,
+        "isWarningRecovery": false
+      },
+      "slack": {
+        "handle": "@slack-api-alarm-prod",
+        "isAlert": false,
+        "isAlertRecovery": false,
+        "isAlertToWarning": false,
+        "isNoData": false,
+        "isNoDataRecovery": false,
+        "isRecovery": false,
+        "isWarning": false,
+        "isWarningRecovery": false
+      }
+    },
+    "timeboard_definitions": {
+      "ServiceHealth": {
+        "description": "",
+        "graphs": [
+          {
+            "definition": {
+              "autoscale": false,
+              "precision": 2,
+              "requests": [
+                {
+                  "aggregator": "avg",
+                  "conditional_formats": [
+                    {
+                      "comparator": "\u003e",
+                      "palette": "white_on_red",
+                      "value": 80
+                    },
+                    {
+                      "comparator": "\u003e=",
+                      "palette": "white_on_yellow",
+                      "value": 95
+                    },
+                    {
+                      "comparator": "\u003c",
+                      "palette": "white_on_green",
+                      "value": 95
+                    }
+                  ],
+                  "q": "avg:trace.http.request.apdex.by.service{$service,$environment}"
+                }
+              ],
+              "viz": "query_value"
+            },
+            "title": "Apdex"
+          },
+          {
+            "definition": {
+              "requests": [
+                {
+                  "q": "avg:aws.ecs.service.cpuutilization{$service,$environment}",
+                  "style": {
+                    "palette": "dog_classic",
+                    "type": "solid",
+                    "width": "normal"
+                  },
+                  "type": "line"
+                }
+              ],
+              "viz": "timeseries"
+            },
+            "title": "CPU Utilization"
+          },
+          {
+            "definition": {
+              "requests": [
+                {
+                  "q": "avg:aws.ecs.memory_utilization{$service,$environment}",
+                  "style": {
+                    "palette": "dog_classic",
+                    "type": "solid",
+                    "width": "normal"
+                  },
+                  "type": "line"
+                }
+              ],
+              "viz": "timeseries"
+            },
+            "title": "Memory Utilization"
+          },
+          {
+            "definition": {
+              "requests": [
+                {
+                  "q": "avg:trace.http.request.hits{$service,$environment}.as_count()",
+                  "style": {
+                    "palette": "dog_classic",
+                    "type": "solid",
+                    "width": "normal"
+                  },
+                  "type": "bars"
+                }
+              ],
+              "viz": "timeseries"
+            },
+            "title": "Incoming HTTP Requests"
+          },
+          {
+            "definition": {
+              "requests": [
+                {
+                  "q": "avg:aws.applicationelb.httpcode_target_5xx{$service,$environment}.as_count(),\navg:aws.applicationelb.httpcode_elb_4xx{$service,$environment}.as_count()\n",
+                  "style": {
+                    "palette": "dog_classic",
+                    "type": "solid",
+                    "width": "normal"
+                  },
+                  "type": "bars"
+                }
+              ],
+              "viz": "timeseries"
+            },
+            "title": "HTTP Errors"
+          },
+          {
+            "definition": {
+              "requests": [
+                {
+                  "q": "avg:trace.http.request.duration{$service,$environment}",
+                  "style": {
+                    "palette": "dog_classic",
+                    "type": "solid",
+                    "width": "normal"
+                  },
+                  "type": "line"
+                }
+              ],
+              "viz": "timeseries"
+            },
+            "title": "HTTP Request Latency"
+          }
+        ],
+        "layout_type": "ordered",
+        "template_variables": [
+          {
+            "default": "prod",
+            "name": "environment",
+            "prefix": "env"
+          },
+          {
+            "default": "my-service-name",
+            "name": "service",
+            "prefix": "service"
+          }
+        ],
+        "title": "Service my-service-name API Health"
+      }
+    },
+    "timeboards": [
+      "ServiceHealth"
+    ]
+  },
+  "info": {
+    "serviceName": "my-service-name",
+    "stageName": "prod"
+  },
+  "plugins": [
+    "apigee-blue-green",
+    "datadog"
+  ],
+  "stencilVersion": "1.0.0"
+}
