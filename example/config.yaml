@@ -17,10 +17,10 @@ datadog:
     slack:
       handle: "@slack-api-alarm-${self `info.stageName`}"
 
-  # TODO: Only standard datadog timeboard if listed here
+  # TODO: Only include timeboards if listed here
   timeboards:
     - ServiceHealth
-  # TODO: Only standard datadog monitors if listed here
+  # TODO: Only include monitors if listed here
   monitors:
     - HighLatencyP90
     - High4XX
