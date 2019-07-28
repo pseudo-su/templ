@@ -93,6 +93,8 @@ NOTE: if this repo is cloned into you `GOPATH` you will need to prefix all comma
 === Project ideas & potential features
 
 * Preserve the key order when Unmarshalling JSON/YAML/TOML
+* Implement as a lexer/parser/ast
+** Possibly use https://github.com/alecthomas/participle#introduction
 * Implment Unmarshal-ing the tree into your own custom data types
 * Support for "Layering" Nodes/trees trees similar to link:https://github.com/fzerorubigd/onion[onion]
 * Add ability to provide additional functions that hook-in to the node tree
